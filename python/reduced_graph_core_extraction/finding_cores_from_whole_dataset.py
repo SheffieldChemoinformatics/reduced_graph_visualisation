@@ -22,7 +22,7 @@ def input_args():
                         help='Name of the input rg file')
     parser.add_argument('-m',
                         dest='mcs',
-                        default=r'..\example_input_files\output_rg_rg_sim_matrix.txt',
+                        default=r'..\example_input_files\output_rg_sim_matrix.txt',
                         help='Name of the input mcs or similarity matrix file')
     parser.add_argument('-o',
                         dest='output',
