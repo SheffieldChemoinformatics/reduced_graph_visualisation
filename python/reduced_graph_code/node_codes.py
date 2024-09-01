@@ -1,0 +1,27 @@
+##### Do not change the keys only the code and label values can be changed
+### HBA = hydrogen bond acceptor, HBD = hydrogen bond donor, NHB = no hydrogen bonding
+
+node_codes_dict = {'acyclic inert':{'code':0, 'label':'[Li]'},
+              'acyclic HBA':{'code':1, 'label':'[Ga]'},
+              'acyclic HBD':{'code':2, 'label':'[Gd]'},
+              'aromatic NHB':{'code':3, 'label':'[No]'},
+              'aromatic HBA':{'code':4, 'label':'[Na]'},
+              'aromatic HBD':{'code':5, 'label':'[Nd]'},
+              'aliphatic HBD':{'code':6, 'label':'[Cd]'},
+              'aliphatic HBA':{'code':7, 'label':'[Ca]'},
+              'aliphatic NHB':{'code':8, 'label':'[Co]'},
+              'acid':{'code':9, 'label':'[Ac]'},
+              'base':{'code':10, 'label':'[Ba]'},
+              'acyclic HBD HBA':{'code':11, 'label':'[Ge]'},
+              'aromatic HBD HBA':{'code':12, 'label':'[Ne]'},
+              'aliphatic HBD HBA':{'code':13, 'label':'[Ce]'},
+              'hydrophobic':{'code':14,'label':'[Hg]'},
+              'metal':{'code':15,'label':'[Au]'},
+              'positive':{'code':16, 'label':'[Os]'},
+              'negative':{'code':17, 'label':'[Ta]'},
+              'aliphatic positive':{'code':18, 'label':'[W]'},
+              'aromatic positive':{'code':19, 'label':'[Re]'},
+              'acyclic positive':{'code':20, 'label':'[Zr]'},
+              'aliphatic negative':{'code':21, 'label':'[Ti]'},
+              'aromatic negative':{'code':22, 'label':'[Pt]'},
+              'acyclic negative':{'code':23, 'label':'[Hf]'}}

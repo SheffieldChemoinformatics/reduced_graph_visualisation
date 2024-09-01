@@ -1,0 +1,3738 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+    
+<head>
+    <meta charset="utf-8">
+    
+    {% block head %}
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- AngularJS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+        <!-- HTML2CANVAS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+        <!-- RZSlider-->
+        <!-- <link rel="stylesheet" type="text/css" href="/path/to/angular-slider/dist/rzslider.css"/> -->
+        <link rel='stylesheet' href='https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.css'>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.js"></script>
+        <script src="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.js"></script>
+        
+        <title>Lead Optimisation Tool!</title>
+        
+        <style>
+            .bg-company-grey{
+                background-color:rgb(228,226,225);
+            }
+            .bg-company-orange{
+                background-color:rgb(243,114,33);
+            }
+
+            .custom-slider.rzslider {
+                width: 300px;
+            }
+
+            .custom-slider.rzslider .rz-pointer{
+                background-color:rgb(243,114,33);
+            }
+
+            .topnav a {
+                float: left;
+                color: rgb(243,114,33);
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+            .topnav a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+            .topnav a.active {
+                border-style: none none solid none;
+                border-color: rgb(243,114,33);
+            }
+
+            #visualisation_navigation a {
+                color: rgb(243,114,33);
+                height: 23px;
+                width: 200px;
+                padding: 20px 20px 0px 20px;
+            }
+
+            #visualisation_navigation li {
+                float: left;
+                margin-left: 2px;
+                background-color: rgb(228,226,225);
+                border-style: none;
+                border-color: rgb(243,114,33);
+            }
+
+            #visualisation_navigation ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #core_navigation a {
+                color: rgb(243,114,33);
+                height: 23px;
+                width: 200px;
+                padding: 20px 20px 0px 20px;
+            }
+
+            #core_navigation li {
+                float: left;
+                margin-left: 2px;
+                background-color: rgb(228,226,225);
+                border-style: none;/*solid*/
+                border-color: rgb(243,114,33);
+            }
+
+            #core_navigation ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #visualisation_navigation_newdataset a {
+                color: rgb(243,114,33);
+                height: 23px;
+                width: 200px;
+                padding: 20px 20px 0px 20px;
+            }
+
+            #visualisation_navigation_newdataset li {
+                float: left;
+                margin-left: 2px;
+                background-color: rgb(228,226,225);
+                border-style: none;/*solid*/
+                border-color: rgb(243,114,33);
+            }
+
+            #visualisation_navigation_newdataset ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #core_navigation_newdataset a {
+                color: rgb(243,114,33);
+                height: 23px;
+                width: 200px;
+                padding: 20px 20px 0px 20px;
+            }
+
+            #core_navigation_newdataset li {
+                float: left;
+                margin-left: 2px;
+                background-color: rgb(228,226,225);
+                border-style: none;/*solid*/
+                border-color: rgb(243,114,33);
+            }
+
+            #core_navigation_newdataset ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .link {
+              stroke: #aaa;
+            }
+            
+            .node text {
+            stroke:#333;
+            }
+            
+            .node circle{
+            stroke:#fff;
+            stroke-width:3px;
+            fill:#555;
+            }
+        
+            table {
+              margin: auto;
+            }
+            table, td, th {
+              text-align: center;
+              border: 1px solid rgb(31,20,93);
+            }
+            th {
+              background-color: rgb(0,159,218);
+              color: white;
+            }
+            
+        </style>
+    {% endblock %}
+</head>
+
+<body>
+    
+    <!-- Banner contatiner-->
+    <div id="banner_container" ng-controller="BannerController">
+        {% block navigation %}
+        <!-- Static Navigation Bar -->
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary bg-company-grey" style="overflow:hidden;width:100%;top:0;position:fixed;">
+                <a class="navbar-brand" id="title_text" style="color:rgb(243,114,33)">Lead Optimisation Tool</a>
+                <!-- Logos -->
+                <img src="/static/sheffield.png" alt="SheffieldLogo" id="SheffieldLogo" width="100" style="float:right;">
+                <img src="/static/logo_white.png" alt="SheffieldChemoLogo" id="SheffieldChemoLogo" width="100" style="float:right;">
+                <img src="/static/gsk.png" alt="GSKLogo" id="GSKLogo" width="50" style="float:right;">
+
+                <div class="topnav">
+                    <a id="current_dataset_tab" class="active" ng-click="currentDatasetFunction()">Current Datasets</a>
+                    <a id="new_dataset_tab" ng-click="newDatasetFunction()">New Dataset</a>
+                </div>
+            </nav>
+        {% endblock %}
+    </div>
+        
+    <!-- Main body of the visualisation -->
+    <div id="container" ng-controller="MainController" style="margin-top:75px;margin-left:5px;">   
+        {% block content %}
+        {% endblock %}
+
+        <div id="new_dataset_wrapper" style="display: none;margin-left: 5px;">
+
+            <div id="creating_new_dataset_parameters" style="display: inline">
+                <p style="color: rgb(243,114,33);">Adding A New Dataset</p>
+
+                <!-- Table of parameters to set-->
+                <div id="uploading_new_dataset_div" style="margin-left:10px">
+
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="new_dataset_name">Dataset Name:</label>
+                                <input type="text" id="new_dataset_name" name="new_dataset_name">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Minimum Number of Nodes:</p>
+                                <select id="minodes_selectionBox">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4" selected>4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                </select>
+                            </td>
+                            <td>
+                                <p>Default 4 minimum number of nodes.</p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label for="min_tanimoto_separation">Minimum Tanimoto Separation:</label>
+                                <input type="number" id="min_tanimoto_separation" name="min_tanimoto_separation" value="0.5" min="0" max="1" step="0.1">
+                                <p>Must be between 0 and 1.</p>
+                            </td>
+                            <td>
+                                <p>Default 0.5</p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Fingerprint Bit Length:</p>
+                                <select id="fp_bit_len_selectionBox">
+                                    <option value="1024">1024</option>
+                                    <option value="2048" selected>2048</option>
+                                    <option value="4096">4096</option>
+                                    <option value="8192">8192</option>
+                                </select>
+                            </td>
+                            <td>
+                                <p>Default 2048</p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <p>Round Data:</p>
+                                <div id="round_data_newdataset_check">
+                                    <input type="radio" name="round_code" id="round_data_newdataset_no" checked="checked"> Not Present
+                                    <input type="radio" name="round_code" id="round_data_newdataset_yes"> Present
+                                </div>
+                            </td>
+                            <td>
+                                <label for="round_data_name">Round names in order (separate by space):</label>
+                                <input type="text" id="round_data_name" name="round_data_name">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><p>Upload File:</p></td>
+                            <td>
+                                <form action="upload" method="post" enctype="multipart/form-data">
+                                    <input id="filename" type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)">
+                                </form>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><p>File format be "SMILES ID pIC50" and then "Round" if want to differentiate between. This needs to be a tab separated file.</p></td>
+                        </tr>
+
+                    </table>
+
+                    <button ng-click="runningNewDatasetFunction()" style="margin-top: 5px;">Submit</button>
+
+                </div>
+
+                <div id="processing_steps">
+                    <p id="loading_file"></p>
+                    <p id="creating_rgs"></p>
+                    <p id="creating_mcs"></p>
+                    <p id="creating_rg_cores"></p>
+                    <p id="creating_files_for_visualisation"></p>
+                    <img src="/static/loading_gif.gif" alt="loadingLogo" id="loadingGif_process" width="50" style="display:none; margin-top: 2; margin-left: 15;">
+                </div>
+
+            </div>          
+
+        </div>
+
+        <!-- Dataset selection dropdown menu-->
+        <div id="dataset_selection" style="display: inline-block;">
+            <p style="display: inline-block;">Select Dataset</p>
+                <select id="selectionBox" ng-model="dataset" ng-change="chemicalmapFunction(dataset);" style="display: inline-block;">
+                    {% for data in datasets %}
+                    <option value="{{ data }}">{{data}}</option>
+                    {% endfor %}
+                </select>
+        </div>
+        
+        <div id="current_datasets_wrapper" style="display: inline;">
+            <div id="new_dataset_button" style="display: none;">
+                <button ng-click="anotherNewDataset()">Another New Dataset</button>
+            </div>
+
+            <!-- Top menu selection -->
+            <div id="top_menu_selection">
+
+                <!-- Text stating the dataset -->
+                <p id="dataset_title" style="color:rgb(243,114,33);vertical-align: middle;margin-left: auto;margin-right: auto;width: 50%;font-size: 25px; display: inline-block;"></p>
+                
+                <!-- Search Bars -->
+                <div id="search_bars" style="float:right; display: inline-block;">
+                    <!-- Molecule ID search bars -->
+                    <div id="mol_search_bar_entry" style="float:right; margin-right: 10px; display: inline-block;">
+                        <form>
+                            <input id="search_bar" type="text" placeholder="Search Molecule ID..." style="float: left; border: none; font-size: 17px;">
+                            <input type="reset" value="Reset" style="font-size: 17px;background: #ddd;border: none;" ng-click="resetsearchFunction();">
+                            <button ng-click="searchFunction();" id="search_button"  type="submit" style="float: right;font-size: 17px;background: #ddd;border: none;cursor: pointer;">Submit</button>
+                        </form>  
+                    </div> 
+                    <!-- Core search bars -->
+                    <div id="core_search_bar_entry" style="float:right; margin-right: 10px; display: inline-block;">
+                        <form>
+                            <input id="core_search_bar" type="text" placeholder="Search Core..." style="float: left; border: none; font-size: 17px;">
+                            <input type="reset" value="Reset" style="font-size: 17px;background: #ddd;border: none;" ng-click="resetsearchFunction()">
+                            <button ng-click="searchCoreFunction();" id="core_search_button"  type="submit" style="float: right;font-size: 17px;background: #ddd;border: none;cursor: pointer;">Submit</button>
+                        </form>  
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Round selection within datasets -->
+            <div id="round_selection" style="display: none; margin-top:5px;">
+                <!-- Display Core Progression-->
+                <!-- Control Buttons -->
+                <button id="core_progression_display_button" ng-click="coreprogressionDisplay()" style="display: inline;">Round Core Progression</button>
+                <button id="core_progression_hide_button" ng-click="coreprogressionHide()" style="display: none;">Hide Core Progression</button>
+                <!-- Display Core Progression Table information -->
+                <div id="core_progression_table_location" style="display: none;margin-left:2px;margin-top: 5px;"></div>
+                <!-- Dropdown selection menu-->
+                <p style="display: inline-block">Select Round</p>
+                <select id="roundselectionBox" ng-model="rounddataset" ng-change="roundchemicalmapFunction(dataset);" style="display: inline-block;"></select>
+            </div>
+
+
+            <!-- Visualisation Navigator-->
+            <div id="visualisation_navigation" style="display: none;margin-top: 5px">
+                <ul>
+                    <li><a id="scatterplot_button" accesskey="a" ng-click="scatterplotFunction();">Scatterplot</a></li>
+                    <li><a id="rg_core_vis_button" accesskey="c" ng-click="allcoreextractionFunction()">RG Core Visualisation</a></li>
+                </ul>
+                <hr id="banner_vis_nav" style="color: rgb(228,226,225);height: 3px;width: 100%;max-width: 100%;position: bottom;">
+            </div>
+                
+            
+            <!-- Scatterplot -->
+            <div id="scatterplot_wrapper" class="scatterplot" style="display: none;">
+                <!-- Scatterplot type-->
+                <div id="chart_selector">
+                    <input type="radio" name="chart_code" id="chart_option1_pca" checked="" ng-click="chemicalmapFunction(dataset)"> PCA
+                    <input type="radio" name="chart_code" id="chart_option2_tsne" ng-click="chemicalmapFunction(dataset)"> TSNE <!-- ng-click="changeChart()"-->
+                </div>
+                <!-- Searched Cores and Molecule IDs -->
+                <div id="searched_cores_and_mol_ids_scatterplot" style="float:left;">
+                    <p id="searched_cores_and_mols_id_scatterplot_text" style="color:rgb(243,114,33);"></p>
+                </div>
+                <!-- Scatterplot d3 object -->
+                <div id="scattplot-reps"></div>
+                <canvas id="plot_canvas" width="960" height="500" style="display:none"></canvas>
+                <!-- Save Button -->
+                <button id="save_img" ng-click="savePlotImage()">Download Plot as Image</button>
+
+                <!-- Hover Information for Molecule on scatterplot-->
+                <div id="hover_information" style="position: absolute;display: none;background:rgb(228,226,225);border: 1px solid black;border-radius: 5px;padding: 5px;">
+                    <p id="SMILES_tag" style="color: rgb(243,114,33);"></p>
+                    <p id="ID_tag" style="color: rgb(243,114,33);"></p>
+                    <p id="Core_tag" style="color: rgb(243,114,33);"></p>
+                </div>
+            </div>
+            
+
+            <!-- Node breakdown pop up window-->
+            <div id="breakdown_small_screen" style="overflow:scroll;display: none;z-index:2;height:1200px; width:750px;position:absolute;right:5px;float:left;border:1px solid black;background-color:white;">
+                <!-- Pop up banner-->
+                <div id="top_bar" style="height:20px;margin-left:2px;background-color:rgb(228,226,225);">
+                    <p id="node_title" style="float:left;"></p>
+                    <p id="close_pop_up" style="float:right;" ng-click="close_breakdown_small_screen();">Close</p>
+                </div>
+                <!-- Node breakdown details -->
+                <div id="node_info_breakdown" style="display:none;float:left;">
+                    <!-- Pie chart -->
+                    <div id="svgdataurl"></div>
+                    <div id="rg_pie_chart" class="pie_chart" style="display:none;"></div>
+                    <p id="pop_up_functional_group_text" style="color:rgb(243,114,33);"></p>
+                    <!-- Table information -->
+                    <div id="node_table_location" style="display: none;margin-left:2px;"></div>
+                </div>
+            </div>
+
+
+            <!-- All RG Core visualisation-->
+            <div id="rg_core_visualisation_wrapper" style="display:none; overflow:hidden;margin-top: 5px;margin-bottom: 5px;">
+                
+                
+                
+                <!-- RG Core Visualisation Navigator-->
+                <div id="rg-core-vis-navigator">
+                    <div id="core_navigation">
+                        <ul>
+                            <li><a id="all_cores_button" accesskey="a" ng-click="allcoresFunction()">All Cores</a></li>
+                            <li><a id="single_core_button" accesskey="a" ng-click="singlecoreFunction()">Single Core</a></li>
+                            <li><a id="core_comparator_button" accesskey="c" ng-click="comparatorFunction()">Core Comparator</a></li>
+                        </ul>
+                        <hr id="banner_rg_core_vis_nav" style="color: rgb(228,226,225);height: 3px;width: 100%;max-width: 100%;position: bottom;">
+                    </div>
+                    <!-- Save Button -->
+                    <button id="save_rg_cores" ng-click="saveRGCoreImage()">Download RG Core as Image</button>
+                    <!-- Node label switch-->
+                    <div id="node_label_selector">
+                        <p id="node_label_selector_text">Node Labels:</p>
+                        <input type="radio" name="node_labellor" id="node_label_option1_on" checked="" ng-click="nodeLabelFunction()"> On
+                        <input type="radio" name="node_labellor" id="node_label_option2_off" ng-click="nodeLabelFunction()"> Off
+                    </div>
+                    <!-- Searched Cores and Molecule IDs -->
+                    <div id="searched_cores_and_mol_ids_rg_core" style="float:left;">
+                        <p id="searched_cores_and_mols_id_rg_core_text" style="color:rgb(243,114,33);"></p>
+                    </div>
+                </div>
+                
+
+
+                <!-- All RG Core Visualisation-->
+                <div id="all-cores-visualisation-div" class="all_core_rgs" style="display: none;float:left;z-index:1;">
+                    <!-- Range slider-->
+                    <div id="core_range_slider">
+                        <label for="mycoreRange">Filter Cores on Existing Number of Examples:</label>
+                        
+                        <rzslider class="custom-slider" id="rzsliderRange" rz-slider-model="minRangeSlider.minValue" rz-slider-high="minRangeSlider.maxValue" rz-slider-floor="minRangeSlider.floor" rz-slider-ceil="minRangeSlider.ceil" rz-slider-options="minRangeSlider.options"></rzslider>
+                        <p id="numberofcoresfiltered" style="color: rgb(243,114,33);"></p>
+                    </div>
+
+                    <!-- Loading Gif-->
+                    <img src="/static/loading_gif.gif" alt="loadingLogo" id="loadingGif" width="50" style="display:inline-block; margin-top: 2; margin-left: 15;">
+
+                    <!-- RG Core visualisation d3 object -->
+                    <div id="core-reps" class="all_core_rgs_d3" ></div>
+                    <canvas id="all_rg_core_canvas" width="960" height="500" style="display:none"></canvas>
+                
+                    <!-- Dataset Additional Information-->
+                    <div id="dataset_information" ><!--style="display: none;"-->
+                        <p id="number_mols_in_dataset" style="color: rgb(243,114,33);">Number of Molecules in Dataset: </p>
+                        <p id="number_rg_in_dataset" style="color: rgb(243,114,33);">Number of Reduced Graphs in the Dataset: </p>
+                        <p id="number_of_cores" style="color: rgb(243,114,33);">Number of Cores in the Dataset: </p>
+                    </div>
+
+                    <!-- Node breakdown table -->
+                    <div id="node_core_table_location" style="display: none;">
+                        <button id="save_core_table" ng-click="saveCoreTable()">Download Table</button>
+                    </div>
+                </div>
+                
+                
+
+                <!-- Single core visualisation -->
+                <div id="single-core-visualisation-div" style="display: none;">
+                    <!-- RG Core selection -->
+                    <select id="singlecoreselectionBox" ng-model="core" name="singlecoreselectionBox" ng-model="singlecore" ng-change="singlecoreselectedFunction(core)"></select>
+                    <!-- Single RG Core visualisation d3 object -->
+                    <div id="rg-rep" class="single_core_rg_d3"></div>
+                    <canvas id="single_rg_core_canvas" width="960" height="500" style="display:none"></canvas>
+                    <!-- Single Core data information -->
+                    <div id="single_core_information">
+                        <p id="core_identity" style="color: rgb(243,114,33);">Core: </p>
+                        <p id="number_mols_in_core" style="color: rgb(243,114,33);">Number of Molecules in the Core: </p>
+                    </div>
+                    <!-- Just core or additional information -->
+                    <div id="rg_anaylsis_checked" class="checkbox-group required">
+                        <input type="radio" name="analysis" id="rg_analysis_option1" ng-click="removeadditionalFunction();" checked=""> Just Core Analysis
+                        <input type="radio" name="analysis" id="rg_analysis_option2" ng-click="additionalFunction();">Inclusion of Additional Groups Analysis
+                    </div>
+                    <!-- Table with information about molecules with RG core -->
+                    <div id="mol_table" class="mol_table" style="display: none;">
+                        <button id="save_molecule_table" ng-click="saveMolTable()">Download Table</button>
+                    </div>
+                </div>
+
+
+                <!-- RG core comparator screen -->
+                <div id="core-comparator-visualisation-div" style="display: none;"> 
+                    <!-- Comparator Core visualisation -->
+                    <div id="comparator_screen">
+                        <!-- Core comparison selection -->
+                        <div id="coreselectionBox" name="coreselectionBox" ng-model="comparecore" ng-change="comparecoreFunction()"></div>
+                        <!-- Core comparator RG core visualisation d3 object -->
+                        <div id="core-comparator" class="comparator_core_rgs" style="display: none;float:left;z-index:1;"></div>
+                        <canvas id="core_comparator_canvas" width="960" height="500" style="display:none"></canvas>
+                        <!-- Table with information and save button-->
+                        <div id="core-comparator-table" style="display: none;">
+                            <button id="save_comparator_table" ng-click="saveComparatorTable()">Download Table</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Node Hover Pop Up -->
+                <div id="node_information" style="position: absolute;display: none;background:rgb(228,226,225);border: 1px solid black;border-radius: 5px;padding: 5px;">
+                    <p id="node_smiles" style="color: rgb(243,114,33);"></p>
+                    <p id="node_appearance" style="color: rgb(243,114,33);"></p>
+                    <img id="node_img_info"></img>
+                </div>
+
+
+            </div>
+
+        
+        </div>
+
+    </div>
+        
+    
+    {% block footer %}
+        <!--<p>Copyright </p>-->
+    {% endblock %}
+    
+    
+    {% block scripts %}
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <!-- jQuery-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- all compiled plugins -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <!-- Interactive java script -->
+    <script src="/static/js/viz_js.js"></script>
+    <!--<script src="/static/js/viz_scatterplot_js.js"></script>-->
+    <!-- <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script> -->
+    <!-- <script src="/static/js/RG_core_visualisation.js" type='text/javascript'></script> -->
+    
+    <script>
+
+    var w = 2100;//900;
+    var h = 1000;//450;
+    var padding = [ 20, 110, 50, 100 ];  //Top, right, bottom, left
+
+    var h2 = 420;//w/5;
+    var w2 = 600;//w;
+
+    var x = null;
+    var y = null;
+
+    var rg_vis_dataset_cores = null;
+    var highlight_molecules = null;
+    var highlight_cores = null;
+    var table_of_data = [];
+    var type_of_dataset = null;
+
+    document.addEventListener('mousemove', onMouseUpdate, false);
+    function onMouseUpdate(e) {
+        x = e.pageX;
+        y = e.pageY;
+    }
+
+    var core_list = [];
+
+    var xScale = d3.scale.linear()
+                .range([ padding[3], w - padding[1] - padding[3] ]);
+
+    var yScale = d3.scale.linear()
+                .range([ h - padding[2], padding[0] ] );
+                        
+    var xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom");
+                    
+    var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");				
+
+    var chemical_map_svg = d3.select("#scattplot-reps")//h3
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h)
+                .attr("id","chemical_map_plot");
+
+    var all_core_network_svg = d3.select("#core-reps")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h*2)
+                .attr("border", 1)
+                .attr("id","cores_plot");
+
+    var comparator_core_network_svg = d3.select("#core-comparator")
+                .append("svg")
+                .attr("width", w/2)
+                .attr("height", h)
+                .attr("border", 1)
+                .attr("id","cores_plot_comparator");
+                
+    var single_core_network_svg = d3.select("#rg-rep")
+                .append("svg")
+                .attr("width", w/2)
+                .attr("height", h/2)
+                .attr("border", 1)
+                .attr("id","rg_plot");
+                
+    var single_core_mol_table_svg = d3.select("#mol_table")
+                .append("table")
+                .attr("class", "table table-condensed table-striped")
+                .attr("id","interactive_mol_table");
+                
+    var pop_up_node_piechart = d3.select("#rg_pie_chart")
+                .append("svg")
+                .attr("width", w2)
+                .attr("height", h2)
+                .attr("id","node_div")
+                .append("g")
+                .attr("transform", "translate(" + w2/5 + "," + h2/2 +")")
+                .attr("id","rg_pie");
+    
+    var core_progression_table_svg = d3.select("#core_progression_table_location")
+                .append("table")
+                .attr("class", "table table-condensed table-striped")
+                .attr("id","core_progression_interactive_core_table");
+
+    var multi_core_node_table_svg = d3.select("#node_core_table_location")
+                .append("table")
+                .attr("class", "table table-condensed table-striped")
+                .attr("id","multi_interactive_core_table");
+
+    var core_comparator_node_table_svg = d3.select("#core-comparator-table")
+                .append("table")
+                .attr("class", "table table-condensed table-striped")
+                .attr("id","compare_interactive_core_table");
+
+    var pop_up_node_table = d3.select("#node_table_location")
+                .append("table")
+                .attr("class", "table table-condensed table-striped")
+                .attr("id","interactive_table");
+
+    var node_graph_svg = d3.select("#node_activity_graph")
+                .append("svg")
+                .attr("width", w/4)
+                .attr("height", h/4)
+                .attr("id","node_activity_plot");
+
+    var myApp = angular.module('myApp', ['rzSlider', 'ui.bootstrap']);
+
+    myApp.controller('BannerController', ['$scope', function($scope){
+        function clearsvgs(){
+            chemical_map_svg.selectAll("*").remove();
+            all_core_network_svg.selectAll("*").remove();
+            comparator_core_network_svg.selectAll("*").remove();
+            single_core_network_svg.selectAll("*").remove();
+            single_core_mol_table_svg.selectAll("*").remove();
+            multi_core_node_table_svg.selectAll("*").remove();
+            core_comparator_node_table_svg.selectAll("*").remove();
+
+            document.getElementById('visualisation_navigation').style.display = 'none';
+            document.getElementById('scatterplot_wrapper').style.display = 'none';
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+            document.getElementById('dataset_title').innerHTML = '';
+            document.getElementById('new_dataset_button').style.display = 'none';
+            //document.getElementById('').style.display = '';
+        }
+
+        $scope.newDatasetFunction = function(){
+            document.getElementById('current_datasets_wrapper').style.display = 'none';
+            document.getElementById('new_dataset_wrapper').style.display = 'inline';
+            document.getElementById('dataset_selection').style.display = 'none';
+
+            document.getElementById('current_dataset_tab').removeAttribute('class');
+            document.getElementById('new_dataset_tab').setAttribute('class', 'active');
+
+            type_of_dataset = "new dataset";
+            // clear the svgs
+            clearsvgs();
+        };
+
+        $scope.currentDatasetFunction = function(){
+            document.getElementById('current_datasets_wrapper').style.display = 'inline';
+            document.getElementById('new_dataset_wrapper').style.display = 'none';
+            document.getElementById('dataset_selection').style.display = 'inline';
+
+            document.getElementById('new_dataset_tab').removeAttribute('class');
+            document.getElementById('current_dataset_tab').setAttribute('class', 'active');
+
+            type_of_dataset = "current dataset";
+            //clear the svgs
+            clearsvgs();
+
+            document.getElementById('round_selection').style.display = 'none';            
+        };
+    }])
+                
+    myApp.controller('MainController', ['$scope', '$http', function($scope, $http){
+        //Range slider config
+        $scope.minRangeSlider = {
+            /**
+            * This function
+            */
+            minValue: 10,
+            maxValue: 90,
+            options: {
+                floor: 0,
+                ceil: 100,
+                step: 1,
+                showSelectionBar: true,
+                getSelectionBarColor: function(value){ return "rgb(243,114,33)"; },
+                onChange: function(){ $scope.outputUpdate();}           
+            }
+        };
+
+        function sizeScale(components){
+            /**
+            * This function
+            */
+            if (components > 20){
+                components = 20;
+            }
+            r1 = [1, 20]; //components range
+            r2 = [10, 100]; // scale range
+            return ( components - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
+        };
+
+        var multicoreNetwork = {
+            /**
+            * This function
+            */
+            // Set up the graph information
+            graph_information : {
+                "nodes" : [],
+                "edges" : [],
+                "table" : {}
+            },
+            core_information : {
+                "nodes" : [],
+                "edges" : [],
+                "table" : {}
+            },
+            core_selected_order : [],
+            cores_present_in_svg : [],
+            number_of_examples : [],
+            dataset_investigating : null,
+            core_investigating: null,
+            
+            // Graph Design
+            info: function(){
+                // Add the cores to the core present in svg list
+                cores_showing = [];
+                for (node_info in this.graph_information.nodes){
+                    if (cores_showing.indexOf(this.graph_information.nodes[node_info].core) < 0){
+                        cores_showing.push(this.graph_information.nodes[node_info].core);
+                    };
+                    //console.log(this.core_information.nodes[node_info].core, this.cores_present_in_svg.indexOf(this.core_information.nodes[node_info].core));
+                    // if (cores_showing.indexOf(this.core_information.nodes[node_info].core) < 0){
+                    //     cores_showing.push(this.core_information.nodes[node_info].core);
+                    // };
+                };
+                this.cores_present_in_svg = cores_showing;
+
+                //console.log(all_core_network_svg, 'SVG');
+                all_core_network_svg.selectAll("*").remove();
+                this.network.nodes(this.graph_information.nodes)
+                    .links(this.graph_information.edges)
+                    .start();
+                
+                var pie = d3.layout.pie()
+                    .value(function(d) { return d.Occurrences; });
+
+                var arc = d3.svg.arc()
+                    .outerRadius(function(d){ return d.data.pieSize; })
+                    .innerRadius(0);
+                
+                var link = all_core_network_svg.selectAll(".link")
+                    .data(this.graph_information.edges);
+                link.enter().append("line")
+                    .attr("class", "link")
+                    .attr("id", function(d){
+                        var id = d.core.concat("_", d.source.name, "_", d.target.name);
+                        return id;
+                    })
+                    .style("stroke-width", function(d) { return d.weight; });
+                link.exit().remove();
+                
+                var node = all_core_network_svg.selectAll(".node")
+                    .data(this.graph_information.nodes);
+                node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("id", function(d){
+                        var id = d.core.concat("_", d.name);
+                        return id;
+                    })
+                    .call(this.network.drag);
+                node.exit().remove(); //deletes all the duplicate nodes
+
+                var colour_scale = d3.scale.category20();
+                
+                node.selectAll("path")
+                    .data(function(d) {
+                        var pieSize = sizeScale(d.functional_groups);
+                        if (d.functional_groups_breakdown){
+                            d.functional_groups_breakdown.map(function(t){ t.pieSize = pieSize; return t; });
+                        }
+                        return pie(d.functional_groups_breakdown); })
+                    .enter()
+                    .append("svg:path")
+                    .attr("d", arc)
+                    .attr("fill", function(d) { return colour_scale(d.data.SMILES); })
+                    .attr("class", function(d) { return d.data.SMILES; })
+                    .style("stroke", "rgb(243,114,33)")
+                    .style("stroke-width", function(d){
+                        if (d.data.core == multicoreNetwork.core_investigating){
+                            highlight_cores = d.data.core;
+                            searched_cores_and_mols_id_rg_core_text.innerText = "Highlighted Core: " + d.data.core;
+                            return 2.5;//1.8
+                        } else {
+                            return 0;
+                        }
+                        });
+                
+                node.on('click', function(d){
+                        var piechart = d3.select(this).node();
+
+                        document.getElementById('node_title').innerHTML = d.name;
+                        nodeInformationFunction(piechart, d.functional_groups_breakdown);
+                    })
+                    .on('mouseover', function(d){
+                        let tooltip = document.getElementById('node_information');
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = x + 5 +'px';
+                        tooltip.style.top = y + 5 +'px';
+                        
+                        document.getElementById('node_smiles').innerHTML = "SMILES: "+d.group;
+                        document.getElementById('node_appearance').innerHTML = "Number of Functional Groups: "+d.functional_groups;
+                        d.functional_groups_breakdown.sort(function(first, second){
+                            return second.Occurrences - first.Occurrences;
+                        });
+                        document.getElementById("node_img_info").setAttribute("src", "data:image/png;base64,"+d.functional_groups_breakdown[0].Image);
+                    })
+                    .on('mouseout', function(){
+                        document.getElementById('node_information').style.display = 'none';
+                    });
+                
+                node.append("text")
+                    .attr("dx", 12)
+                    .attr("dy", ".5em")
+                    .attr("class", 'node_label_text')
+                    .attr("style", function(){
+                            if (document.getElementById('node_label_option1_on').checked == true) {
+                                return "display: inline";
+                            } else {
+                                return "display: none";
+                            }
+                        })
+                    .text(function(d) { return d.name; });
+
+                this.network.on("tick", function() {
+                    radius = 100;//100 is the max radius size
+                    height_of_svg = document.getElementById("cores_plot").height.animVal.value;
+                    width_of_svg = document.getElementById("cores_plot").width.animVal.value;
+
+                    node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width_of_svg - radius, d.x)); })//w
+                        .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height_of_svg - radius, d.y)); });//h*2
+                    
+                    link.attr("x1", function(d) { return d.source.x; })
+                        .attr("y1", function(d) { return d.source.y; })
+                        .attr("x2", function(d) { return d.target.x; })
+                        .attr("y2", function(d) { return d.target.y; });
+                        
+                    node.attr("transform", function(d) {
+                        var dcx = Math.max(radius, Math.min(width_of_svg - radius, d.x));//w
+                        var dcy = Math.max(radius, Math.min(height_of_svg - radius, d.y));//h*2
+                        return "translate(" + dcx + "," + dcy + ")";
+                        });
+                    });
+            },
+            setup: function(){//core_investigating){
+                this.network = d3.layout.force()
+                    .gravity(0.05)
+                    .linkDistance(function(d){ return Math.max(sizeScale(d.source.functional_groups) + sizeScale(d.target.functional_groups) + 20, 50);})
+                    .charge(-1000) //-5000-100
+                    .size([document.getElementById("cores_plot").width.animVal.value, document.getElementById("cores_plot").height.animVal.value]);
+
+                //this.info(core_investigating);
+            },
+            addData: function(data){
+                // find the current number of items present in the node list
+                var current_number_of_nodes = this.graph_information.nodes.length;
+
+                for(var i = 0, size = data.edges.length; i < size ; i++){
+                    var item = data.edges[i];
+                    item.source = item.source + current_number_of_nodes;
+                    item.target = item.target + current_number_of_nodes;
+                }
+
+                //Add the data
+                // console.log(data, 'DATA');
+                this.graph_information.nodes = this.graph_information.nodes.concat(data.nodes);
+                this.graph_information.edges = this.graph_information.edges.concat(data.edges);
+                this.graph_information.table = data.table;
+                this.core_information.nodes = this.core_information.nodes.concat(data.nodes);
+                this.core_information.edges = this.core_information.edges.concat(data.edges);
+                this.core_information.table = data.table;
+                this.number_of_examples = data.examples;
+
+                //Add the core to the core_selected_order
+                for (d in data.nodes){
+                    if (this.core_selected_order.indexOf(data.nodes[d].core) < 0){
+                        this.core_selected_order.push(data.nodes[d].core);
+                        this.cores_present_in_svg.push(data.nodes[d].core);
+                    }
+                }
+                
+                //Restart the simulation
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();
+            },
+            deleteData: function(list_of_cores) {        
+                for (c in list_of_cores){
+                    // need to check the this.core_information and delete the nodes and edges that contain these
+                    for (var i = this.graph_information.nodes.length; i--;){
+                        if(this.graph_information.nodes[i].core == list_of_cores[c]){
+                            this.graph_information.nodes.splice(i, 1);
+                        }
+                    }
+                    for (var i = this.graph_information.edges.length; i--;){
+                        if(this.graph_information.edges[i].source.core == list_of_cores[c]){
+                            this.graph_information.edges.splice(i, 1);
+                        }
+                    }
+                    // remove from this.cores_present_in_svg
+                    this.cores_present_in_svg.pop(list_of_cores[c]);
+                }
+
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();
+            },
+            filterData: function(){
+                // console.log(this.cores_present_in_svg, 'initial');
+                cores_to_remain = [];
+                cores_to_filter = [];
+                
+                for (i = 0; i < Object.values(this.number_of_examples).length; i++){
+                    // core_filter = document.querySelector('#mycoreRangevolume').value;
+                    max_value = $scope.minRangeSlider.maxValue;
+                    min_value = $scope.minRangeSlider.minValue;
+                    // if (Object.values(this.number_of_examples)[i] >= core_filter){
+                    if (Object.values(this.number_of_examples)[i] >= min_value && Object.values(this.number_of_examples)[i] <= max_value){
+                        cores_to_remain.push(Object.keys(this.number_of_examples)[i]);
+                    } else {
+                        cores_to_filter.push(Object.keys(this.number_of_examples)[i]);
+                    }
+                }
+                document.getElementById("numberofcoresfiltered").innerHTML = cores_to_remain.length+ ' core(s) present. ' + cores_to_filter.length + ' core(s) have been filtered';
+                
+                // console.log(cores_to_remain, this.cores_present_in_svg, cores_to_remain == this.cores_present_in_svg, 'compare cores');
+                // If the cores are different then change 
+                if (cores_to_remain != this.cores_present_in_svg){
+                    // we are gonna change the graph_information!
+                    // Need to find the cores to remove
+                    if (cores_to_filter.length > 0){
+                        this.deleteData(cores_to_filter);
+                        allcoreTable.deleteData(cores_to_filter);
+                        allcoreTable.info();
+                    }
+                    // console.log(this.cores_present_in_svg, 'after deletion');
+                    // Need to find the cores to add
+                    data_to_add = {"nodes":[],
+                                    "edges":[],
+                                    "examples":this.number_of_examples,
+                                    "table":{}};
+                    
+                    for (c in cores_to_remain){
+                        //console.log(this.cores_present_in_svg)
+                        if (this.cores_present_in_svg.indexOf(cores_to_remain[c]) < 0){
+                            for (i=0; i < this.core_information.nodes.length; i++){
+                                if (this.core_information.nodes[i].core == cores_to_remain[c]){
+                                    data_to_add.nodes.push(this.core_information.nodes[i]);
+                                }
+                            }
+                            // need to do edges too
+                            for (i=0; i < this.core_information.edges.length; i++){
+                                if (this.core_information.edges[i].core == cores_to_remain[c]){
+                                    data_to_add.edges.concat(this.core_information.edges[i]);
+                                    data_to_add.edges.push({"source": parseInt(this.core_information.edges[i].source.name.match(/\d+/)),
+                                                            "target": parseInt(this.core_information.edges[i].target.name.match(/\d+/)),
+                                                            "weight": this.core_information.edges[i].weight,
+                                                            "core": this.core_information.edges[i].core})
+                                }
+                            }
+                        }
+                        if (Object.keys(this.core_information.table).indexOf(cores_to_remain[c])>= 0){
+                            // data_to_add.table[cores_to_remain[c]] = this.core_information.table[cores_to_remain[c]][0];
+                            if (cores_to_remain > 1){
+                                data_to_add.table[cores_to_remain[c]] = this.core_information.table[cores_to_remain[c]][0];
+                            } else {
+                                data_to_add.table[cores_to_remain[c]] = this.core_information.table[cores_to_remain[c]];
+                            }
+                        }
+                    }
+                    // console.log(data_to_add, 'To add');
+                    if (data_to_add.nodes.length > 0){
+                        this.addData(data_to_add);
+                        allcoreTable.addData(data_to_add.table);
+                        allcoreTable.info();
+                    }
+                    // console.log(this.cores_present_in_svg, 'after adding');
+                }
+            }
+        };
+
+        $scope.nodeLabelFunction = function(){
+            /**
+            * This function
+            */
+            node_labels = document.getElementsByClassName('node_label_text');
+            if (document.getElementById('node_label_option1_on').checked == true) {
+                for (i = 0; i < node_labels.length; i++) {
+                    node_labels[i].setAttribute("style", "display: inline");
+                }
+            } else {
+                for (i = 0; i < node_labels.length; i++) {
+                    node_labels[i].setAttribute("style", "display: none");
+                }
+            };
+        };
+
+        var corecomparisonNetwork = {
+            /**
+            * This function
+            */
+            // Set up the graph information
+            graph_information : {
+                "nodes" : [],
+                "edges" : []
+            },
+            core_information : {
+                "nodes" : [],
+                "edges" : []
+            },
+            core_selected_order : [],
+            // Graph Design
+            info: function(core_investigating){
+                comparator_core_network_svg.selectAll("*").remove();
+                this.network.nodes(this.graph_information.nodes)
+                    .links(this.graph_information.edges)
+                    .start();
+                
+                var pie = d3.layout.pie()
+                    .value(function(d) { return d.Occurrences; });
+
+                var arc = d3.svg.arc()
+                    .outerRadius(function(d){ return d.data.pieSize; })
+                    .innerRadius(0);
+                
+                var g = comparator_core_network_svg.selectAll(".arc");
+                        //     .on('mouseover', function(d){
+                        //     console.log('dsgadfh', d);
+                        // });
+                
+                var link = comparator_core_network_svg.selectAll(".link")
+                    .data(this.graph_information.edges);
+                link.enter().append("line")
+                    .attr("class", "link")
+                    .attr("id", function(d){
+                        var id = d.source.core.concat("_", d.source.name, "_", d.target.name);
+                        return id;
+                    })
+                    .style("stroke-width", function(d) { return d.weight; });
+                link.exit().remove();
+                
+                var node = comparator_core_network_svg.selectAll(".node")
+                    .data(this.graph_information.nodes);
+                node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("id", function(d){
+                        var id = d.core.concat("_", d.name);
+                        return id;
+                    })
+                    .call(this.network.drag);
+                node.exit().remove(); //deletes all the duplicate nodes
+
+                var colour_scale = d3.scale.category20();
+                
+                node.selectAll("path")
+                    .data(function(d) {
+                        var pieSize = sizeScale(d.functional_groups);
+                        if (d.functional_groups_breakdown){
+                            d.functional_groups_breakdown.map(function(t){ t.pieSize = pieSize; return t; });
+                        }
+                        return pie(d.functional_groups_breakdown); })
+                    .enter()
+                    .append("svg:path")
+                    .attr("d", arc)
+                    .attr("class", function(d) { return d.data.SMILES; })
+                    .attr("fill", function(d) { return colour_scale(d.data.SMILES); })
+                    .style("stroke", "rgb(243,114,33)")
+                    .style("stroke-width", function(d){
+                        if (d.data.core == core_investigating){
+                            highlight_cores = d.data.core;
+                            searched_cores_and_mols_id_rg_core_text.innerText = "Highlighted Core: " + d.data.core;
+                            return 1.8;
+                        } else {
+                            return 0;
+                        }
+                        });
+                
+                node.on('click', function(d){
+                        var piechart = d3.select(this).node();
+                        document.getElementById('node_title').innerHTML = d.name;
+                        nodeInformationFunction(piechart, d.functional_groups_breakdown);
+                    })
+                    .on('mouseover', function(d){
+                        let tooltip = document.getElementById('node_information');
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = x + 5 +'px';
+                        tooltip.style.top = y + 5 +'px';
+                        
+                        document.getElementById('node_smiles').innerHTML = "SMILES: "+d.group;
+                        document.getElementById('node_appearance').innerHTML = "Number of Functional Groups: "+d.functional_groups;
+                        d.functional_groups_breakdown.sort(function(first, second){
+                            return second.Occurrences - first.Occurrences;
+                        });
+
+                        document.getElementById("node_img_info").setAttribute("src", "data:image/png;base64,"+d.functional_groups_breakdown[0].Image);
+                    })
+                    .on('mouseout', function(){
+                        document.getElementById('node_information').style.display = 'none';
+                    });
+                
+                node.append("text")
+                    .attr("dx", 12)
+                    .attr("dy", ".5em")
+                    .attr("class", 'node_label_text')
+                    .attr("style", function(){
+                            if (document.getElementById('node_label_option1_on').checked == true) {
+                                return "display: inline";
+                            } else {
+                                return "display: none";
+                            }
+                        })
+                    .text(function(d) { return d.name; });
+
+                this.network.on("tick", function() {
+                    radius = 100;//100 is the max radius size
+                    node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(w - radius, d.x)); })
+                        .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(h*2 - radius, d.y)); });
+                    
+                    link.attr("x1", function(d) { return d.source.x; })
+                        .attr("y1", function(d) { return d.source.y; })
+                        .attr("x2", function(d) { return d.target.x; })
+                        .attr("y2", function(d) { return d.target.y; });
+                    
+                    node.attr("transform", function(d) {
+                        //radius = 100;//100 is the max radius size
+                        var dcx = Math.max(radius, Math.min(w - radius, d.x));
+                        var dcy = Math.max(radius, Math.min(h*2 - radius, d.y));
+                        return "translate(" + dcx + "," + dcy + ")";
+                        }); 
+                    });
+            },
+            setup: function(){                    
+                this.network = d3.layout.force()
+                    .gravity(0.05)
+                    .linkDistance(function(d){ return Math.max(sizeScale(d.source.functional_groups) + sizeScale(d.target.functional_groups) + 20, 50);})
+                    .charge(-1000) //-5000-100
+                    .size([document.getElementById("cores_plot_comparator").width.animVal.value, document.getElementById("cores_plot_comparator").height.animVal.value]);
+                
+                console.log([document.getElementById("cores_plot_comparator").width.animVal.value, document.getElementById("cores_plot_comparator").height.animVal.value]);
+            },
+            addData: function(data){
+                // find the current number of items present in the node list
+                var current_number_of_nodes = this.graph_information.nodes.length;
+
+                for(var i = 0, size = data.edges.length; i < size ; i++){
+                    var item = data.edges[i];
+                    item.source = item.source + current_number_of_nodes;
+                    item.target = item.target + current_number_of_nodes;
+                }
+
+                //Add the data
+                this.graph_information.nodes = this.graph_information.nodes.concat(data.nodes);
+                this.graph_information.edges = this.graph_information.edges.concat(data.edges);
+                
+                //Add the core to the core_selected_order
+                this.core_selected_order.push(data.nodes[0].core);
+                
+                //Restart the simulation
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();
+            },
+            deleteData: function(core) {
+                // need to check the this.core_information and delete the nodes and edges that contain these
+                for (var i = this.graph_information.nodes.length; i--;){
+                    if(this.graph_information.nodes[i].core == core){
+                        this.graph_information.nodes.splice(i, 1);
+                    }
+                }
+                for (var i = this.graph_information.edges.length; i--;){
+                    if(this.graph_information.edges[i].source.core == core){
+                        this.graph_information.edges.splice(i, 1);
+                    }
+                }
+
+                console.log(this.graph_information);
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();  
+            }  
+        };
+
+        // var coreComparatorReset = function(){
+        //     // remove children
+        //     document.getElementById('coreselectionBox')
+        //     document.getElementById('core_comparator')
+        // };
+
+        var corecomparisonTable = {
+            /**
+            * This function
+            */
+            //set up the table data
+            comparison_table_data : {},
+
+            //Table design
+            addData: function(data){
+                this.comparison_table_data = Object.assign(this.comparison_table_data, data);
+            },
+            deleteData: function(core){
+                delete this.comparison_table_data[core];
+            },
+            info: function(){
+                // clear the current svg
+                core_comparator_node_table_svg.selectAll("*").remove();
+
+                thead = core_comparator_node_table_svg.append("thead");
+                tbody = core_comparator_node_table_svg.append("tbody");
+                
+                var columns = Object.keys(this.comparison_table_data);
+                data_for_table = this.comparison_table_data;
+                
+                thead.append("tr")
+                    .selectAll("th")
+                    .data(columns)
+                    .enter()
+                    .append("th")
+                        //.text(function(d){ return d;})
+                        .text(function(d){
+                            if (allcoreTable.new_cores.indexOf(d) >= 0){
+                                return '*New* '+d;
+                            } else {
+                                return d;
+                            };
+                        })
+                
+                var rows = tbody.selectAll("tr")
+                        .data([columns.map(function(d){ return data_for_table[d]; })])                            // each row gets one object
+                    .enter().append("tr");
+
+                
+                cells = rows.selectAll("td")
+                    .data(function(row){ return row; })
+                    .enter()
+                    .append("td");
+            
+                cells.filter(function(d) { return !(d instanceof Array); })
+                        .text(function(d) { return d; });
+                    // fill with a new table if data is an Array
+                cells.filter(function(d) { return (d instanceof Array); })
+                        .append("table")
+                        .call(recurse);
+                
+                function recurse(sel){
+                    sel.each(function(data){
+                        core_node_breakdown_table_svg = d3.select(this);
+                        colnames = Object.keys(data[0][0]);
+                        //console.log(table, 'table');
+                        
+                        core_node_breakdown_table_svg.append("thead").append("tr").selectAll("th")
+                            .data(colnames)
+                            .enter().append("th")
+                            .text(function(d) { return d; });
+                            
+                        tds = core_node_breakdown_table_svg.append("tbody").selectAll("tr")
+                            .data(data[0])                          // each row gets one object
+                            .on("mouseover", function(){
+                                d3.select(this)
+                                    .style("background-color", "orange");
+                            })
+                        .enter().append("tr").selectAll("td")
+                            .data(function(d) {                 // each cell gets one value
+                            return colnames.map(function(k) { // for each colname (i.e. key) find the corresponding value
+                                return d[k] || "";              // use empty string if key doesn't exist for that object
+                            });
+                            })
+                        .enter()
+                        .append("td")
+                            .text(function(d){
+                                if (typeof(d) == "number"){
+                                    cell_value = d;
+                                } else{
+                                    cell_value = null;
+                                }
+                                return cell_value;
+                            });
+                        
+                        tds.filter(function(d) { return !(d instanceof Array); })
+                            .append("img")
+                            .attr("src", function(d){
+                            if (typeof(d) != "number") {
+                                cell_value = d;
+                            } else {
+                                cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                            }
+                            return "xlink:xlink:href", "data:image/png;base64,"+cell_value; });//+d
+                            //.text(function(d) { console.log(d, 'ddd'); return d; });
+                        
+                    });
+                }
+            }
+        };
+
+        var allcoreTable = {
+            /**
+            * This function
+            */
+            //set up the table data
+            comparison_table_data : {},
+            dataset: null,
+            core_investigating : null,
+            new_cores: [],
+
+            //Table design
+            addData: function(data){
+                this.comparison_table_data = Object.assign(this.comparison_table_data, data);
+            },
+            deleteData: function(list_of_cores){
+                for (core in list_of_cores){
+                    delete this.comparison_table_data[list_of_cores[core]];
+                }
+                
+            },
+            info: function(){
+                document.getElementById('node_core_table_location').style.display = 'inline';
+                // clear the current svg
+                multi_core_node_table_svg.selectAll("*").remove();
+
+                thead = multi_core_node_table_svg.append("thead");
+                tbody = multi_core_node_table_svg.append("tbody");
+                
+                var columns = Object.keys(this.comparison_table_data);
+                data_for_table = this.comparison_table_data;
+                // console.log(this.comparison_table_data, 'Core Node Table');
+                core_list = columns;
+
+                new_cores_list = this.new_cores;
+
+                thead.append("tr")
+                .selectAll("th")
+                .data(columns)
+                .enter()
+                .append("th")
+                    .text(function(d){
+                        if (new_cores_list.indexOf(d) >= 0){
+                            return '*New* '+d;
+                        } else {
+                            return d;
+                        };
+                    })
+                .on("click", function(d){
+                    single_core_extraction(dataset, d);
+                })
+                .attr("id", function(d){
+                    return d;
+                })
+                .style("background-color", function(d){
+                    if (d == this.core_investigating){
+                        return d3.rgb(243,114,33);
+                    } else {
+                        return d3.rgb(0,159,218);
+                    }});
+        
+                var rows = tbody.selectAll("tr")
+                        .data([columns.map(function(d){ return data_for_table[d]; })]) //data.table                           // each row gets one object
+                    .enter().append("tr");
+            
+                cells = rows.selectAll("td")
+                    .data(function(row){ return row; })
+                    .enter()
+                    .append("td");
+            
+                cells.filter(function(d) { return !(d instanceof Array); })
+                        .text(function(d) { return d; });
+                    // fill with a new table if data is an Array
+                cells.filter(function(d) { return (d instanceof Array); })//d;JSON.stringify(d)console.log(d, 'd'); 
+                        //.call(function(data){console.log(data.__data__,'asdfag');})
+                        .append("table")
+                        .call(recurse);
+            
+            
+                function recurse(sel){
+                    sel.each(function(data){
+                        // console.log(data, 'data');
+                        
+                        core_node_breakdown_table_svg = d3.select(this);
+                        colnames = Object.keys(data[0][0]);
+                        //console.log(table, 'table');
+                        
+                        core_node_breakdown_table_svg.append("thead").append("tr").selectAll("th")
+                            .data(colnames)
+                            .enter().append("th")
+                            .text(function(d) { return d; });
+                            
+                        tds = core_node_breakdown_table_svg.append("tbody").selectAll("tr")
+                            .data(data[0])                          // each row gets one object
+                            .on("mouseover", function(){
+                                d3.select(this)
+                                    .style("background-color", "orange");
+                            })
+                        .enter().append("tr").selectAll("td")
+                            .data(function(d) {                 // each cell gets one value
+                            return colnames.map(function(k) { // for each colname (i.e. key) find the corresponding value
+                                return d[k] || "";              // use empty string if key doesn't exist for that object
+                            });
+                            })
+                        .enter()
+                        .append("td")
+                            .text(function(d){
+                                if (typeof(d) == "number"){
+                                    cell_value = d;
+                                } else{
+                                    cell_value = null;
+                                }
+                                return cell_value;
+                            });
+                        
+                        tds.filter(function(d) { return !(d instanceof Array); })
+                            .append("img")
+                            .attr("src", function(d){
+                                if (typeof(d) != "number") {
+                                    cell_value = d;
+                                } else {
+                                    cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                                }
+                                return "xlink:xlink:href", "data:image/png;base64,"+cell_value; });//+d
+                            //.text(function(d) { console.log(d, 'ddd'); return d; });
+                        
+                    });
+                }    
+
+            }
+        };
+
+        var singlecoreNetwork = {
+            /**
+            * This function
+            */
+            // Set up the graph information
+            graph_information : {
+                "nodes" : [],
+                "edges" : []
+            },
+            core_information : {
+                "nodes" : [],
+                "edges" : []
+            },
+            
+            // Graph Design
+            info: function(){
+                single_core_network_svg.selectAll("*").remove();
+                this.network.nodes(this.graph_information.nodes)
+                    .links(this.graph_information.edges)
+                    .start();
+                
+                var pie = d3.layout.pie()
+                    .value(function(d) { return d.Occurrences; });
+                var arc = d3.svg.arc()
+                    .outerRadius(function(d){ return d.data.pieSize; })
+                    .innerRadius(0);
+                
+                var link = single_core_network_svg.selectAll(".link")
+                    .data(this.graph_information.edges);
+                link.enter().append("line")
+                    .attr("class", "link")
+                    .attr("id", function(d){
+                        var id = d.source.core.concat("_", d.source.name, "_", d.target.name);
+                        return id;
+                    })
+                    .style("stroke-width", function(d) { return d.weight; });
+                link.exit().remove();
+                
+                var node = single_core_network_svg.selectAll(".node")
+                    .data(this.graph_information.nodes);
+                node.enter().append("g")
+                    .attr("id", function(d){
+                        var id = d.core.concat("_", d.name);
+                        return id;
+                    })
+                    .attr("class", "node");
+                node.exit().remove(); //deletes all the duplicate nodes
+
+                var colour_scale = d3.scale.category20();
+                
+                node.selectAll("path")
+                    .data(function(d) {
+                                var pieSize = sizeScale(d.functional_groups);
+                                if (d.functional_groups_breakdown){
+                                    d.functional_groups_breakdown.map(function(t){ t.pieSize = pieSize; return t; });
+                                }
+                                return pie(d.functional_groups_breakdown); })
+                    .enter()
+                    .append("svg:path")
+                    .attr("d", arc)
+                    .attr("class", function(d) { return d.data.SMILES; })
+                    .attr("fill", function(d) { return colour_scale(d.data.SMILES); });
+                
+                node.on('click', function(d){
+                        //var piechart = d3.select(this);
+                        var piechart = d3.select(this).node();
+                        //added
+                        pop_up_node_piechart.selectAll("*").remove();
+                        document.getElementById('rg_pie_chart').style.display = 'inline';
+                        
+                        document.getElementById('node_title').innerHTML = d.name;
+                        nodeInformationFunction(piechart, d.functional_groups_breakdown);
+                    })
+                    .on('mouseover', function(d){
+                        let tooltip = document.getElementById('node_information');
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = x + 5 +'px';
+                        tooltip.style.top = y + 5 +'px';
+                        
+                        document.getElementById('node_smiles').innerHTML = "SMILES: "+d.group;
+                        document.getElementById('node_appearance').innerHTML = "Number of Functional Groups: "+d.functional_groups;
+                        d.functional_groups_breakdown.sort(function(first, second){
+                            return second.Occurrences - first.Occurrences;
+                        });
+                        document.getElementById("node_img_info").setAttribute("src", "data:image/png;base64,"+d.functional_groups_breakdown[0].Image);
+                    })
+                    .on('mouseout', function(){
+                        document.getElementById('node_information').style.display = 'none';
+                    });
+                
+                node.append("text")
+                    .attr("dx", 12)
+                    .attr("dy", ".5em")
+                    .attr("class", 'node_label_text')
+                    .attr("style", function(){
+                            if (document.getElementById('node_label_option1_on').checked == true) {
+                                return "display: inline";
+                            } else {
+                                return "display: none";
+                            }
+                        })
+                    .text(function(d) { return d.name; });
+
+                this.network.on("tick", function() {
+                    link.attr("x1", function(d) { return d.source.x; })
+                        .attr("y1", function(d) { return d.source.y; })
+                        .attr("x2", function(d) { return d.target.x; })
+                        .attr("y2", function(d) { return d.target.y; });
+                    
+                    node.attr("transform", function(d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                        });
+                    });
+            },
+            setup: function(){                    
+                this.network = d3.layout.force()
+                    .gravity(0.05)
+                    .linkDistance(function(d){ return Math.max(sizeScale(d.source.functional_groups) + sizeScale(d.target.functional_groups) + 20, 50);})
+                    //.distance(50)
+                    .charge(-350) //-5000-100-1000
+                    .size([document.getElementById("rg_plot").width.animVal.value, document.getElementById("rg_plot").height.animVal.value]);
+                    
+                this.info();
+            },
+            addData: function(data){
+                //Add the data
+                this.graph_information.nodes = this.graph_information.nodes.concat(data.nodes);
+                this.graph_information.edges = this.graph_information.edges.concat(data.edges);
+                
+                //Restart the simulation
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();
+            },
+            deleteData: function() {
+                this.graph_information.nodes = this.core_information.nodes;
+                this.graph_information.edges = this.core_information.edges;
+                
+                this.network.nodes(this.graph_information.nodes);
+                this.network.links(this.graph_information.edges);
+                this.network.start();//alpha(0.3).restart()
+                
+                this.info();
+            }
+        };
+        
+        $scope.roundchemicalmapFunction = function(dataset){
+            console.log(dataset, 'DATASET');
+            rg_vis_dataset_cores = null;
+            document.getElementById("scatterplot_button").style.borderStyle = "none none solid none";//Color = "blue";//"rgb(243,114,33)";
+            document.getElementById("rg_core_vis_button").style.borderStyle = "none";
+            chemical_map_svg.selectAll("*").remove();
+            all_core_network_svg.selectAll("*").remove();
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            document.getElementById('single-core-visualisation-div').style.display = 'none';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+
+            document.getElementById('visualisation_navigation').style.display = 'inline';
+            if (dataset === undefined){
+                dataset = 'new_dataset';
+            } else {
+                document.getElementById('dataset_title').innerHTML = dataset;
+            }
+            
+            //recognise_round(dataset);
+            mapFunction(dataset);
+        }
+
+        $scope.chemicalmapFunction = function(dataset){
+            /**
+            * This function
+            */
+            rg_vis_dataset_cores = null;
+            document.getElementById("scatterplot_button").style.borderStyle = "none none solid none";//Color = "blue";//"rgb(243,114,33)";
+            document.getElementById("rg_core_vis_button").style.borderStyle = "none";
+            chemical_map_svg.selectAll("*").remove();
+            all_core_network_svg.selectAll("*").remove();
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            document.getElementById('single-core-visualisation-div').style.display = 'none';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+
+            document.getElementById('visualisation_navigation').style.display = 'inline';
+            if (dataset === undefined){
+                dataset = 'new_dataset';
+            } else {
+                document.getElementById('dataset_title').innerHTML = dataset;
+            }
+            
+            // remove RG core filter text and ranges
+            //document.getElementById("numberofcoresfiltered").innerHTML = null;
+            recognise_round(dataset);
+            mapFunction(dataset);
+        };
+        
+        $scope.savePlotImage = function(){
+            /**
+            * This function
+            */
+            var html = d3.select("#chemical_map_plot")
+                    .attr("version", 1.1)
+                    .attr("xmlns", "http://www.w3.org/2000/svg")
+                    .node().parentNode.innerHTML;
+
+            var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+            var img = '<img src="'+imgsrc+'">'; 
+            d3.select("#svgdataurl").html(img);
+
+            document.getElementById('plot_canvas').height = h;
+            document.getElementById('plot_canvas').width = w;
+            var canvas = document.getElementById("plot_canvas"),
+            context = canvas.getContext("2d");
+
+            var image = new Image;
+            image.src = imgsrc;
+            image.onload = function() {
+                context.drawImage(image, 0, 0);
+
+                var canvasdata = canvas.toDataURL("image/png");//image/svg
+
+                var pngimg = '<img src="'+canvasdata+'">'; 
+                d3.select("#pngdataurl").html(pngimg);
+
+                var a = document.createElement("a");
+                dataset_name = document.getElementById('dataset_title').innerHTML;
+
+                if (highlight_molecules != null){
+                    dataset_name = dataset_name.concat('_highlighted_mol_'.concat(highlight_molecules));
+                } else if (highlight_cores != null){
+                    console.log(highlight_cores, highlight_cores.type, 'CHECK ME line 1098');
+                    if (typeof(highlight_cores) == 'string'){
+                        dataset_name = dataset_name.concat('_highlighted_core_'.concat(highlight_molecules));
+                    } else {
+                        name_string =''
+                        for (c in highlight_cores){
+                            name_string += '_' + highlight_cores[c];
+                        }
+                        dataset_name = dataset_name.concat('_highlighted_core'.concat(name_string));
+                    }
+                };
+                // if (highlight_molecules.length > 0 == true){
+                //     dataset_name = dataset_name.concat('_highlighted_'.concat(highlight_molecules[0]));
+                // }
+
+                if (document.getElementById('chart_option1_pca').checked == true) {
+                    var plot_type = '_pca.png';//.png
+                } else if (document.getElementById('chart_option2_tsne').checked == true) {
+                    var plot_type = '_tsne.png';
+                };
+                var plot_file_name = dataset_name.concat(plot_type);
+                a.download = plot_file_name;
+                a.href = canvasdata;
+                a.click();
+            }
+        };
+
+        $scope.scatterplotFunction = function(){
+            /**
+            * This function
+            */
+            document.getElementById("scatterplot_button").style.borderStyle = "none none solid none";
+            document.getElementById("rg_core_vis_button").style.borderStyle = "none";
+            document.getElementById('scatterplot_wrapper').style.display = 'inline';
+            document.getElementById('single-core-visualisation-div').style.display = 'none';
+            document.getElementById('rg_pie_chart').style.display = 'none';
+            document.getElementById('node_table_location').style.display = 'none';
+            document.getElementById('mol_table').style.display = 'none';
+            // document.getElementById('mol_clicked_information').style.display = 'none';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+            
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            document.getElementById('node_core_table_location').style.display = 'none';
+
+            highlight_molecules = null;
+            highlight_cores = null;
+        };
+
+        function removeHighlightFunction(){
+            /**
+            * This function
+            */
+            if (document.getElementById('scatterplot_wrapper').style.display == 'inline') {
+                previous_highlighted_molecule = document.getElementById(highlight_molecules);
+                previous_highlighted_molecule.removeAttribute("stroke");
+                previous_highlighted_molecule.removeAttribute("stroke-width");
+                highlight_molecules = null;
+            } else if (document.getElementById('rg_core_visualisation_wrapper').style.display == 'inline') {
+                // get out each of the cores
+                highlight_c = highlight_molecules;
+
+                for (c in highlight_c){
+                    core = highlight_c[c];
+                    list_of_nodes = document.getElementsByClassName("node");
+                
+                    var id_of_nodes = [];
+                    for(var i=0; i<list_of_nodes.length; i++) {
+                        node_id = list_of_nodes[i].id;
+                        core_id = node_id.split('_');
+                        if (core_id[0] == core){
+                            id_of_nodes.push(list_of_nodes[i].id);
+                        };
+                    };
+
+                    for(var i=0; i<id_of_nodes.length; i++){
+                        node_pie_chart = document.getElementById(id_of_nodes[i]);
+                        for (child in node_pie_chart.childNodes){
+                            if (node_pie_chart.childNodes[child].localName == 'path'){
+                                node_pie_chart.childNodes[child].setAttribute("style", "stroke-width:0");
+                            };
+                        };
+                    };
+                    highlight_molecules = null;
+                    
+                    // Change the table header that previously had core
+                    table_headers = document.getElementsByTagName('th');
+                    for (head in table_headers){
+                        if (table_headers[head].id == core){
+                            table_headers[head].setAttribute("style", "background-color:rgb(0, 159,218);");
+                        }
+                    }
+                };
+            };
+        };
+
+        function removeCoreHighlightFunction(){
+            /**
+            * This function
+            */
+            var core = highlight_cores;
+
+            if (document.getElementById('scatterplot_wrapper').style.display == 'inline') {
+                list_of_circles = document.getElementsByTagName("circle");
+
+                var id_of_circles = [];
+                for(var i=0; i<list_of_circles.length; i++) {
+                    node_class = list_of_circles[i].className.animVal;
+                    if (node_class == core){
+                        list_of_circles[i].removeAttribute("stroke");
+                        list_of_circles[i].removeAttribute("stroke-width");
+                    };
+                };
+                highlight_cores = null;
+
+            } else if (document.getElementById('rg_core_visualisation_wrapper').style.display == 'inline') {
+                var core = highlight_cores;
+                list_of_nodes = document.getElementsByClassName("node");
+                
+                var id_of_nodes = [];
+                for(var i=0; i<list_of_nodes.length; i++) {
+                    node_id = list_of_nodes[i].id;
+                    core_id = node_id.split('_');
+                    if (core_id[0] == core){
+                        id_of_nodes.push(list_of_nodes[i].id);
+                    };
+                };
+                
+                for(var i=0; i<id_of_nodes.length; i++){
+                    node_pie_chart = document.getElementById(id_of_nodes[i]);
+                    for (child in node_pie_chart.childNodes){
+                        if (node_pie_chart.childNodes[child].localName == 'path'){
+                            node_pie_chart.childNodes[child].setAttribute("style", "stroke-width:0");
+                        };
+                    };
+                };
+                multicoreNetwork.core_investigating = null;
+                highlight_cores = null;
+
+                // Change the table header that previously had core
+                table_headers = document.getElementsByTagName('th');
+                for (head in table_headers){
+                    if (table_headers[head].id == core){
+                        table_headers[head].setAttribute("style", "background-color:rgb(0, 159,218);");
+                    }
+                }
+            };
+        };
+
+        $scope.searchFunction = function(){
+            /**
+            * This function
+            */
+            if (highlight_molecules != null) {
+                removeHighlightFunction() 
+            }
+            if (highlight_cores != null) {
+                removeCoreHighlightFunction()
+            }
+            search_bar_entry = document.querySelector('input[id="search_bar"]').value;
+            
+
+            if (document.getElementById('scatterplot_wrapper').style.display == 'inline'){
+                searched_cores_and_mols_id_scatterplot_text.innerText = "Highlighted Molecule ID: " + search_bar_entry;
+                
+                // Need to then highlight the id if present
+                list_of_circles = document.getElementsByTagName("circle");//.getAttribute("ID");
+                var id_of_circles = [];
+                for(var i=0; i<list_of_circles.length; i++) {
+                    id_of_circles.push(list_of_circles[i].id);
+                }
+                if (id_of_circles.indexOf(search_bar_entry) >= 0){
+                    scatterplot_point = document.getElementById(search_bar_entry);
+                    scatterplot_point.setAttribute("stroke","red");
+                    scatterplot_point.setAttribute("stroke-width", 3);
+                    // Need to add to a list to remove the highlight when another ID is searched
+                    highlight_molecules = search_bar_entry;
+                } else {
+                    alert(search_bar_entry.concat(' not in dataset'));
+                    searched_cores_and_mols_id_scatterplot_text.innerText = null;
+                }
+            } else if (document.getElementById('rg_core_visualisation_wrapper').style.display == 'inline'){
+                // Need to find the cores this molecule matches too
+                if (type_of_dataset === "new dataset"){
+                    var dataset = "new_dataset";
+                } else {
+                    var dataset = document.getElementById('dataset_title').innerHTML;
+                }
+                console.log('Molecule CORE finder');
+
+                $http.get('/molecule_core_finder/'+dataset+'/'+search_bar_entry+'/')
+                    .success(function(response){
+                        core_to_match = response[search_bar_entry];
+
+                        searched_cores_and_mols_id_rg_core_text.innerText = "Highlighted Molecule ID: " + search_bar_entry + " Cores: " + core_to_match;
+
+                        list_of_nodes = document.getElementsByClassName("node");
+
+                        var id_of_nodes = [];
+                        for(var i=0; i<list_of_nodes.length; i++) {
+                            node_id = list_of_nodes[i].id;
+                            core_id = node_id.split('_');
+                            if (core_to_match.indexOf(core_id[0]) >= 0){
+                                id_of_nodes.push(list_of_nodes[i].id);
+                            }
+                        }
+                        if (id_of_nodes.length > 0){
+                            for(var i=0; i<id_of_nodes.length; i++){
+                                node_pie_chart = document.getElementById(id_of_nodes[i]);
+                                for (child in node_pie_chart.childNodes){
+                                    if (node_pie_chart.childNodes[child].localName == 'path'){
+                                        node_pie_chart.childNodes[child].setAttribute("style", "stroke:rgb(243,114,33);stroke-width:2.5");
+                                    }
+                                }
+                            }
+                            // Need to add to a list to remove the highlight when another core is searched
+                            highlight_molecules = core_to_match;//highlight_cores.push(search_bar_entry);
+                        } else {
+                            alert(search_bar_entry.concat(' not in dataset'));
+                            searched_cores_and_mols_id_rg_core_text.innerText = null;
+                            highlight_molecules = null;
+                        }
+
+                        for (c in core_to_match){
+                            // Change the table header with core
+                            table_headers = document.getElementsByTagName('th');
+                            for (head in table_headers){
+                                if (table_headers[head].id == core_to_match[c]){
+                                    table_headers[head].setAttribute("style", "background-color:rgb(243, 114, 33);");
+                                }
+                            }
+                        }
+                        
+                    })
+                    .error(function(response){
+                        console.log('FAILURE: No cores extracted');
+                        alert(search_bar_entry.concat(' not in dataset'));
+                        searched_cores_and_mols_id_rg_core_text.innerText = null;
+                        highlight_cores = null;
+                    }); 
+            }
+        };
+
+        $scope.searchCoreFunction = function() {
+            /**
+            * This function
+            */
+            if (highlight_molecules != null){
+                removeHighlightFunction();
+            }
+            if (highlight_cores != null) {
+                removeCoreHighlightFunction()
+            }
+
+            search_bar_entry = document.querySelector('input[id="core_search_bar"]').value;
+
+            if (document.getElementById('scatterplot_wrapper').style.display == 'inline') {
+                searched_cores_and_mols_id_scatterplot_text.innerText = "Highlighted Core: " + search_bar_entry;
+
+                // Need to then highlight the id if present
+                list_of_circles = document.getElementsByTagName("circle");
+
+                var id_of_circles = [];
+                for(var i=0; i<list_of_circles.length; i++) {
+                    node_class = list_of_circles[i].className.animVal//list_of_circles[i];
+                    if (node_class == search_bar_entry){
+                        list_of_circles[i].setAttribute("stroke","red");
+                        list_of_circles[i].setAttribute("stroke-width", 3);
+                        id_of_circles.push(list_of_circles[i].id);
+                    }
+                }
+
+                if (id_of_circles.length > 0){
+                    // // Need to add to a list to remove the highlight when another core is searched
+                    highlight_cores = search_bar_entry;//highlight_cores.push(search_bar_entry);
+                } else {
+                    alert(search_bar_entry.concat(' not in dataset'));
+                    searched_cores_and_mols_id_scatterplot_text.innerText = null;
+                    highlight_cores = null;
+                }
+            } else if (document.getElementById('rg_core_visualisation_wrapper').style.display == 'inline') {
+                highlight_rg_core_function(search_bar_entry);
+
+                // searched_cores_and_mols_id_rg_core_text.innerText = "Highlighted Core: " + search_bar_entry;
+                
+                // // Need to then highlight the id if present
+                // list_of_nodes = document.getElementsByClassName("node");
+                
+                // var id_of_nodes = [];
+                // for(var i=0; i<list_of_nodes.length; i++) {
+                //     node_id = list_of_nodes[i].id;
+                //     core_id = node_id.split('_');
+                //     if (core_id[0] == search_bar_entry){
+                //         id_of_nodes.push(list_of_nodes[i].id);
+                //     }
+                // }
+                // if (id_of_nodes.length > 0){
+                //     for(var i=0; i<id_of_nodes.length; i++){
+                //         node_pie_chart = document.getElementById(id_of_nodes[i]);
+                //         for (child in node_pie_chart.childNodes){
+                //             if (node_pie_chart.childNodes[child].localName == 'path'){
+                //                 node_pie_chart.childNodes[child].setAttribute("style", "stroke:rgb(243,114,33);stroke-width:2.5");
+                //             }
+                //         }
+                //     }
+                //     // Need to add to a list to remove the highlight when another core is searched
+                //     multicoreNetwork.core_investigating =search_bar_entry;
+                //     highlight_cores = search_bar_entry;//highlight_cores.push(search_bar_entry);
+                // } else {
+                //     alert(search_bar_entry.concat(' not in dataset'));
+                //     searched_cores_and_mols_id_rg_core_text.innerText = null;
+                //     highlight_cores = null;
+                // }
+
+                // // Change the table header with core
+                // table_headers = document.getElementsByTagName('th');
+                // for (head in table_headers){
+                //     if (table_headers[head].id == search_bar_entry){
+                //         table_headers[head].setAttribute("style", "background-color:rgb(243, 114, 33);");
+                //     }
+                // }
+            }
+        };
+
+        $scope.resetsearchFunction = function(){
+            /**
+            * This function
+            */
+            if (document.getElementById('scatterplot_wrapper').style.display == 'inline'){
+                // Scatterplot
+                if (highlight_molecules != null) {
+                    removeHighlightFunction()
+                } else if (highlight_cores != null) {//or just do else?
+                    removeCoreHighlightFunction()
+                }
+                searched_cores_and_mols_id_scatterplot_text.innerText = null;
+            } else if (document.getElementById('rg_core_visualisation_wrapper').style.display == 'inline'){
+                // RG Core Vis
+                if (highlight_molecules != null) {
+                    removeHighlightFunction()
+                } else if (highlight_cores != null) {//or just do else?
+                    removeCoreHighlightFunction()
+                }
+                //removeCoreHighlightFunction()
+                searched_cores_and_mols_id_rg_core_text.innerText = null;
+            }          
+            
+        };
+
+        $scope.allcoresFunction = function(){
+            /**
+            * This function
+            */
+            document.getElementById("all_cores_button").style.borderStyle = "none none solid none";
+            document.getElementById("single_core_button").style.borderStyle = "none";
+            document.getElementById("core_comparator_button").style.borderStyle = "none";
+            document.getElementById('all-cores-visualisation-div').style.display = 'inline';
+            //document.getElementById('node_info_breakdown').style.display = 'inline';
+            document.getElementById('node_core_table_location').style.display = 'inline';
+            //document.getElementById('dataset_information').style.display = 'inline';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+            //document.getElementById('comparator_screen').style.display = 'none';
+            document.getElementById('single-core-visualisation-div').style.display = 'none';
+        };
+
+        function saveRGImage(id, canvas_id, type){
+            /**
+            * This function
+            */
+            var html = d3.select(id)
+                    .attr("version", 1.1)
+                    .attr("xmlns", "http://www.w3.org/2000/svg")
+                    .node().parentNode.innerHTML;
+
+            var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+            var img = '<img src="'+imgsrc+'">';
+            d3.select("#svgdataurl").html(img);
+
+            document.getElementById(canvas_id).height = d3.select(id).node().height.animVal.value;
+            document.getElementById(canvas_id).width = d3.select(id).node().width.animVal.value;
+            
+            var canvas = document.getElementById(canvas_id),
+            context = canvas.getContext("2d");
+            
+            var image = new Image;
+            image.src = imgsrc;
+
+            links = document.getElementsByClassName("link");
+            for (l=0; l < links.length-1; l++){
+                // context.beginPath();
+                // context.moveTo(20, 20);
+                // context.lineTo(20, 100);
+                // context.lineTo(70, 100);
+                // context.strokeStyle = "red";
+                // context.stroke();
+                context.beginPath();
+                context.moveTo(links[l].x1.animVal.value, links[l].y1.animVal.value);
+                context.lineTo(links[l].x2.animVal.value, links[l].y2.animVal.value);
+                context.lineWidth = links[l].style.strokeWidth;
+                // set line color
+                context.strokeStyle = "#aaa";
+                context.stroke();
+            }
+            
+            image.onload = function() {
+                context.drawImage(image, 0, 0);
+                
+                var canvasdata = canvas.toDataURL("image/png");
+                var pngimg = '<img src="'+canvasdata+'">'; 
+                d3.select("#pngdataurl").html(pngimg);
+                
+                var a = document.createElement("a");
+                dataset_name = document.getElementById('dataset_title').innerHTML;
+                // put filtered cores
+                if (type != 'comparator_cores'){
+                    if ($scope.minRangeSlider.minValue == $scope.minRangeSlider.options.floor || $scope.minRangeSlider.maxValue == $scope.minRangeSlider.options.ceil){
+                        dataset_name = dataset_name.concat('_filtered_number_of_core_examples_', $scope.minRangeSlider.minValue, '_to_', $scope.minRangeSlider.maxValue);
+                    }
+                }
+                
+                // put molecule in the filename if highlighted
+                if (highlight_molecules != null){
+                    dataset_name = dataset_name.concat('_highlighted_mol_'.concat(highlight_molecules));
+                } else if (highlight_cores != null){
+                    console.log(highlight_cores, highlight_cores.type, 'CHECK ME line 1465');
+                    if (typeof(highlight_cores) == 'string'){
+                        dataset_name = dataset_name.concat('_highlighted_core_'.concat(highlight_molecules));
+                    } else {
+                        name_string =''
+                        for (c in highlight_cores){
+                            name_string += '_' + highlight_cores[c];
+                        }
+                        dataset_name = dataset_name.concat('_highlighted_core'.concat(name_string));
+                    }
+                };
+
+                if (type == 'all_cores'){
+                    var plot_file_name = dataset_name.concat('_rg_cores.png');
+                } else if (type == 'single_core'){
+                    // find the one core that is being looked at
+                    core_investigating = document.getElementById('singlecoreselectionBox').options[document.getElementById('singlecoreselectionBox').selectedIndex].value;
+                    var plot_file_name = dataset_name.concat('_', core_investigating,'_rg_core.png');
+                    //var plot_file_name = dataset_name.concat('_rg_core.png');
+                } else if (type == 'comparator_cores'){
+                    console.log('Check me 1846');
+                    // do I need to put the selected molecules in the filename
+                    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                    list_of_comparator_cores = null;//[]
+                    for (var check=0; check<checkboxes.length; check++){
+                        if (list_of_comparator_cores == null){
+                            list_of_comparator_cores = checkboxes[check].name;
+                        } else {
+                            list_of_comparator_cores += "_" + checkboxes[check].name;
+                        }
+                    }
+                    if (list_of_comparator_cores == null){
+                        var plot_file_name = dataset_name.concat('_core_comparator.png');
+                    } else {
+                        var plot_file_name = dataset_name.concat('_'+list_of_comparator_cores+'_core_comparator.png');
+                    }
+                    
+                }
+                //var plot_file_name = dataset_name.concat('_rg_cores.png');
+                a.download = plot_file_name;
+                a.href = canvasdata;
+                a.click();
+            }
+        };
+
+        $scope.saveRGCoreImage = function(){
+            /**
+            * This function
+            */
+            if (document.getElementById('all-cores-visualisation-div').style.display == 'inline'){
+                saveRGImage('#cores_plot', 'all_rg_core_canvas', 'all_cores');
+            } else if (document.getElementById('single-core-visualisation-div').style.display == 'inline') {
+                saveRGImage('#rg_plot', 'single_rg_core_canvas', 'single_core');
+            } else if (document.getElementById('core-comparator-visualisation-div').style.display == 'inline') {
+                saveRGImage('#cores_plot_comparator', 'core_comparator_canvas', 'comparator_cores');
+            }
+        };
+        
+        $scope.singlecoreFunction = function(){
+            /**
+            * This function
+            */
+            document.getElementById("all_cores_button").style.borderStyle = "none";
+            document.getElementById("single_core_button").style.borderStyle = "none none solid none";
+            document.getElementById("core_comparator_button").style.borderStyle = "none";
+            
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            document.getElementById('node_core_table_location').style.display = 'none';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+
+            document.getElementById('scatterplot_wrapper').style.display = 'none';
+            // document.getElementById('mol_clicked_information').style.display = 'inline';
+            document.getElementById('single-core-visualisation-div').style.display = 'inline';
+            document.getElementById('interactive_mol_table').style.display = 'inline-block';
+            
+        };
+
+        $scope.singlecoreselectedFunction = function(core){
+            /**
+            * This function
+            */
+            var dataset = document.getElementById('dataset_title').innerHTML;
+            single_core_extraction(dataset, core);
+        };
+
+        $scope.comparatorFunction = function(){
+            /**
+            * This function
+            */
+            document.getElementById("all_cores_button").style.borderStyle = "none";
+            document.getElementById("single_core_button").style.borderStyle = "none";
+            document.getElementById("core_comparator_button").style.borderStyle = "none none solid none";
+            
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            //document.getElementById('node_info_breakdown').style.display = 'none';
+            document.getElementById('node_core_table_location').style.display = 'none';
+            //document.getElementById('dataset_information').style.display = 'none';
+            document.getElementById('core-comparator-visualisation-div').style.display = 'inline';
+            //document.getElementById('comparator_screen').style.display = 'inline';
+            document.getElementById('single-core-visualisation-div').style.display = 'none';
+            
+            //corecomparisonNetwork.setup();
+        };
+
+        function comparecoreFunction(core){
+            /**
+            * This function
+            */
+            // How many cores now selected?
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            initial_comparator_plot_width = w/2;
+            initial_comparator_plot_height = h;
+            if (checkboxes.length <= 2){
+                document.getElementById("cores_plot_comparator").setAttribute("width", initial_comparator_plot_width);
+                document.getElementById("cores_plot_comparator").setAttribute("height", initial_comparator_plot_height);    
+            } else if (checkboxes.length < 5){
+                // increase size
+                var new_width = initial_comparator_plot_width + (Math.round(checkboxes.length / 5) * 200);
+                var new_height = initial_comparator_plot_height + (Math.round(checkboxes.length / 5) * 100);
+                document.getElementById("cores_plot_comparator").setAttribute("width", new_width);
+                document.getElementById("cores_plot_comparator").setAttribute("height", new_height);   
+            }
+            // console.log(corecomparisonNetwork.network.size());
+            //corecomparisonNetwork.network.size([document.getElementById("cores_plot_comparator").width.animVal.value, document.getElementById("cores_plot_comparator").height.animVal.value]);
+            corecomparisonNetwork.setup();
+
+            $http.get('/core_comparison/'+core+'/')
+                .then(function(response){
+                    data = response.data;
+                    
+                    corecomparisonNetwork.addData(data);
+                    corecomparisonTable.addData(data.table);
+                    corecomparisonTable.info();
+                    });
+        };
+
+        function removecoreFunction(core){
+            /**
+            * This function
+            */
+            corecomparisonNetwork.deleteData(core);
+            corecomparisonTable.deleteData(core);
+            corecomparisonTable.info();
+        };
+
+        $scope.additionalFunction = function(){
+            /**
+            * This function
+            */
+            cluster_indentity = document.getElementById("cluster_identity").childNodes;
+            additionalgroupsFunction(cluster_indentity[1].textContent);
+        };
+
+        $scope.removeadditionalFunction = function(){
+            /**
+            * This function
+            */
+            cluster_indentity = document.getElementById("cluster_identity").childNodes;
+            removeadditionalgroupsFunction(cluster_indentity[1].textContent);
+        };
+
+        $scope.close_breakdown_small_screen = function(){
+            /**
+            * This function
+            */
+            document.getElementById('breakdown_small_screen').style.display = 'none';
+            document.getElementById('node_info_breakdown').style.display = 'none';
+        };
+
+        $scope.coreprogressionDisplay = function(){
+            document.getElementById('core_progression_display_button').style.display = 'none';
+            document.getElementById('core_progression_hide_button').style.display = 'inline';
+
+            coreprogressionTable.info();
+            document.getElementById('core_progression_table_location').style.display = 'inline';
+        };
+        
+        $scope.coreprogressionHide = function(){
+            document.getElementById('core_progression_display_button').style.display = 'inline';
+            document.getElementById('core_progression_hide_button').style.display = 'none';
+
+            document.getElementById('core_progression_table_location').style.display = 'none';
+        };
+
+        var coreprogressionTable = {
+            /**
+            * This function
+            */
+            //set up the table data
+            comparison_table_data : {},
+            dataset: null,
+            core_investigating : null,
+
+            //Table design
+            addData: function(data){
+                this.comparison_table_data = Object.assign(this.comparison_table_data, data);
+            },
+            // deleteData: function(list_of_cores){
+            //     for (core in list_of_cores){
+            //         delete this.comparison_table_data[list_of_cores[core]];
+            //     }
+                
+            // },
+            deleteData: function(){
+                this.comparison_table_data = {};
+            },
+            info: function(){
+                document.getElementById('node_core_table_location').style.display = 'inline';
+                // clear the current svg
+                core_progression_table_svg.selectAll("*").remove();
+
+                thead = core_progression_table_svg.append("thead");
+                tbody = core_progression_table_svg.append("tbody");
+                
+                var columns = Object.keys(this.comparison_table_data);
+                data_for_table = this.comparison_table_data;
+                // console.log(this.comparison_table_data, 'progression table');
+                core_list = columns;
+
+                thead.append("tr")
+                .selectAll("th")
+                .data(columns)
+                .enter()
+                .append("th")
+                    .text(function(d){
+                        return d;
+                    })
+                // .on("click", function(d){
+                //     single_core_extraction(dataset, d);
+                // })
+                .attr("id", function(d){
+                    return d;
+                })
+                // .style("background-color", function(d){
+                //     if (d == this.core_investigating){
+                //         return d3.rgb(243,114,33);
+                //     } else {
+                //         return d3.rgb(0,159,218);
+                //     }});
+        
+                var rows = tbody.selectAll("tr")
+                        .data([columns.map(function(d){ return data_for_table[d]; })])//data.table                           // each row gets one object
+                    .enter().append("tr");
+            
+                cells = rows.selectAll("td")
+                    .data(function(row){ return row; })
+                    .enter()
+                    .append("td");
+            
+                cells.filter(function(d) { return !(d instanceof Array); })
+                        .text(function(d) { return d; });
+                    // fill with a new table if data is an Array
+                cells.filter(function(d) { return (d instanceof Array); })//d;JSON.stringify(d)console.log(d, 'd'); 
+                        //.call(function(data){console.log(data.__data__,'asdfag');})
+                        .append("table")
+                        .call(recurse);
+            
+            
+                function recurse(sel){
+                    sel.each(function(data){
+                        // console.log(data, 'data');
+                        
+                        core_progression_table_svg = d3.select(this);
+                        colnames = Object.keys(data[0]);//[0]
+                        //console.log(table, 'table');
+                        
+                        core_progression_table_svg.append("thead").append("tr").selectAll("th")
+                            .data(colnames)
+                            .enter().append("th")
+                            .text(function(d) { return d; });
+                            
+                        tds = core_progression_table_svg.append("tbody").selectAll("tr")
+                            .data(data)  //[0]                       // each row gets one object
+                            // .on("mouseover", function(){
+                            //     d3.select(this)
+                            //         .style("background-color", "orange");
+                            // })
+                        .enter().append("tr").selectAll("td")
+                            .data(function(d) { // each cell gets one value
+                            return colnames.map(function(k) { // for each colname (i.e. key) find the corresponding value
+                                return d[k] || "";              // use empty string if key doesn't exist for that object
+                            });
+                            })
+                        .enter()
+                        .append("td")
+                            .text(function(d){
+                                return d;
+                                // if (typeof(d) == "number"){
+                                //     cell_value = d;
+                                // } else{
+                                //     cell_value = null;
+                                // }
+                                // return cell_value;
+                            });
+                        
+                        // tds.filter(function(d) { return !(d instanceof Array); })
+                        //     .append("img")
+                        //     .attr("src", function(d){
+                        //         if (typeof(d) != "number") {
+                        //             cell_value = d;
+                        //         } else {
+                        //             cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                        //         }
+                        //         return "xlink:xlink:href", "data:image/png;base64,"+cell_value; });//+d
+                        //     //.text(function(d) { console.log(d, 'ddd'); return d; });
+                        
+                    });
+                }    
+
+            }
+        };
+
+        function recognise_round(dataset){
+            /**
+             * This function
+             */
+            $http.get('/'+dataset+'/rounds/')
+                .success(function(response){
+                    // console.log(response);
+                    /// Might need to remove the children
+                    if (response.Rounds != 'no rounds'){
+                        coreprogressionTable.deleteData();
+                        coreprogressionTable.addData(response.core_progression);
+                        document.getElementById('round_selection').style.display = 'inline';
+                        //round_names = document.getElementById('round_data_name').value.split(' ');
+                        for (r in response.Rounds){
+                            var option = document.createElement("option");
+                            option.id = response.Rounds[r];
+                            option.value = response.Rounds[r];
+                            option.innerHTML = response.Rounds[r];
+                            document.getElementById('roundselectionBox').appendChild(option);
+                        };
+                        // set the first value
+                        document.getElementById('roundselectionBox').value = document.getElementById('roundselectionBox').options[1].value;
+                    } else {
+                        document.getElementById('round_selection').style.display = 'none'; 
+                    };
+                });
+        };
+
+        function mapFunction(dataset){
+            /**
+            * This function
+            */
+            if (document.getElementById('round_selection').style.display == 'inline'){
+                round_investigating = document.getElementById('roundselectionBox').value;
+            } else {
+                round_investigating = 'norounds';
+            }
+
+            $http.get('/'+dataset+'/'+round_investigating+'/chemical_map/')
+                .success(function(response){
+                    document.getElementById('scatterplot_wrapper').style.display = 'inline';
+                    
+                    xScale.domain([
+                        d3.min(response, function(d){
+                            if (document.getElementById('chart_option1_pca').checked == true) {
+                                return d.x_pca;
+                            } else {
+                                return d.x_tsne;
+                            };
+                            //return d.x;
+                        }),
+                        d3.max(response, function(d){
+                            if (document.getElementById('chart_option1_pca').checked == true) {
+                                return d.x_pca;
+                            } else {
+                                return d.x_tsne;
+                            };
+                            //return d.x;
+                        })
+                    ]);
+                    
+                    
+                    yScale.domain([
+                        d3.min(response, function(d){
+                            if (document.getElementById('chart_option1_pca').checked == true) {
+                                return d.y_pca;
+                            } else {
+                                return d.y_tsne;
+                            };
+                            //return d.y;
+                        }),
+                        d3.max(response, function(d){
+                            if (document.getElementById('chart_option1_pca').checked == true) {
+                                return d.y_pca;
+                            } else {
+                                return d.y_tsne;
+                            };
+                            //return d.y;
+                        })
+                    ]);
+                    
+                    
+                    var circles = chemical_map_svg.selectAll("circle")
+                                            .data(response)
+                                            .enter()
+                                            .append("circle");
+                    //var colour_scale = d3.scaleOrdinal(d3.schemeCategory10);
+                    var colour_scale = d3.scale.category20();
+                    circles.attr("cx", function(data) {
+                                    // console.log(data);
+                                    // console.log(typeof data.x_pca, xScale(20));
+                                    // // if (document.getElementById('chart_option1_pca').checked == true) {
+                                    // //     console.log('True');
+                                    // // } else {
+                                    // //     console.log('False');
+                                    // // }
+                                    if (document.getElementById('chart_option1_pca').checked == true) {
+                                        return xScale(data.x_pca);
+                                    } else {
+                                        return xScale(data.x_tsne);
+                                    };
+                                })
+                            .attr("cy", function(data){
+                                    //return yScale(data.y_pca);
+                                    if (document.getElementById('chart_option1_pca').checked == true) {
+                                        return yScale(data.y_pca);
+                                    } else {
+                                        return yScale(data.y_tsne);
+                                    };
+                                })
+                            .attr("r", 2)
+                            .attr("id", function(data){
+                                return data.ID;
+                            })
+                            .attr("class", function(data){
+                                return data.core;
+                            })
+                            .attr("stroke", function(data){
+                                if (highlight_molecules != null){
+                                    if (data.ID == highlight_molecules){
+                                        return "red";
+                                    } else{
+                                        return "null";
+                                    }
+                                } else if (highlight_cores != null){
+                                    if (data.core == highlight_cores){
+                                        return "red";
+                                    } else{
+                                        return "null";
+                                    }
+                                }
+                            })
+                            .attr("stroke-width", function(data){
+                                if (highlight_molecules != null){
+                                    if (data.ID == highlight_molecules){
+                                        return 3;
+                                    } else{
+                                        return "null";
+                                    }
+                                } else if (highlight_cores != null){
+                                    if (data.core == highlight_cores){
+                                        return 3;
+                                    } else{
+                                        return "null";
+                                    }
+                                }
+                            })
+                            .attr("fill", function(data){
+                                    // console.log(document.getElementById('colour_option1').checked);
+                                    // return colour_scale(data.cluster);
+                                    // if (document.getElementById('colour_option1').checked == true){
+                                    //     return colour_scale(data.cluster);
+                                    // } else {
+                                    //     return colour_scale(data.core);
+                                    // }
+                                        // need to change the python file so that the core gets added to it
+                                        return colour_scale(data.core);
+                                });
+                                //https://stackoverflow.com/questions/38799493/change-color-of-node-groups-in-a-d3-js-force-node-canvas-layout
+                                //https://medium.com/@Elijah_Meeks/color-advice-for-data-visualization-with-d3-js-33b5adc41c90
+                    
+                    circles.on('click', function(d){
+                            //core_extraction(d, dataset);
+                            all_core_extraction(d, dataset);
+                            //nodeInformationFunction(d.cluster);   
+                        })
+                        .on('mouseover', function(d){
+                            //document.getElementById('hover_information').style.display = 'block';
+                            let tooltip = document.getElementById('hover_information');
+                            tooltip.style.display = 'block';
+                            if (document.getElementById('chart_option1_pca').checked == true){
+                                tooltip.style.left = xScale(d.x_pca) + 0.5 +'px';
+                                tooltip.style.top = yScale(d.y_pca) + 0.5 +'px';
+                            } else {
+                                tooltip.style.left = xScale(d.x_tsne) + 0.5 +'px';
+                                tooltip.style.top = yScale(d.y_tsne) + 0.5 +'px';
+                            }
+                            
+                            document.getElementById('SMILES_tag').innerHTML = "SMILES: "+d.SMILES;
+                            document.getElementById('ID_tag').innerHTML = "ID: "+d.ID;
+                            document.getElementById('Core_tag').innerHTML = "Core: "+d.core;
+                            //document.getElementById('Cluster_tag').innerHTML = "Cluster: "+d.cluster;
+                        })
+                        .on('mouseout', function(){
+                            document.getElementById('hover_information').style.display = 'none';
+                        });
+                        
+                        chemical_map_svg.append("g")
+                            .attr("class","x axis")
+                            .attr("transform", "translate(0," + (h - padding[2] + 10) + ")")
+                            .call(xAxis);
+                            
+                        chemical_map_svg.append("g")
+                            .attr("class","y axis")
+                            .attr("transform", "translate(" + (padding[3] - 5) + ",0)")
+                            .call(yAxis);
+                        
+                        legendRectSize = 20;
+                        //legendHeight = 20;//h
+                        //legendWidth = 100;
+                        legendSpacing = 4;
+                        var legend = chemical_map_svg.selectAll('.legend')
+                        .data(colour_scale.domain().sort(function(x,y){ return d3.ascending(x,y); }))
+                        .enter()
+                        .append('g')
+                        .attr('class', 'legend')
+                        .attr('transform', function(d, i) {
+                            //  console.log(d,i);
+                            var height = legendRectSize + legendSpacing;//legendHeight
+                            var offset =  height * colour_scale.domain().length / 2;
+                            //var horz = -2 * (legendWidth*-4);//legendRectSize
+                            //var horz2 = 1100;
+                            var horz = w - (padding[1] + padding[3])+5;
+                            var vert = (i * height)+ 50; //(i * height - offset)+ 50
+                            //console.log(horz, vert, height, offset, i, colour_scale.domain().length, d);
+                            return 'translate(' + horz + ',' + vert + ')';
+                        });
+
+                        legend.append('rect')
+                            .attr('width', legendRectSize)
+                            .attr('height', legendRectSize)                                
+                            .style('fill', colour_scale)
+                            .style('stroke', colour_scale);
+                        
+                        legend.append('text')
+                            .attr('x', legendRectSize + legendSpacing)
+                            .attr('y', legendRectSize - legendSpacing)
+                            .text(function(d) { 
+                                // if (document.getElementById('colour_option1').checked == true){
+                                //         return 'Cluster ' + d;
+                                //     } else {
+                                //         return 'Core ' + d;;
+                                //     }
+                                    return 'Core ' + d;
+                            });
+                    
+                    all_cores_within_core = [];
+                    for (mol in response){
+                        if (all_cores_within_core.indexOf(response[mol].core) < 0){
+                            // create option when core is first seen 
+                            var option = document.createElement("option");
+                            option.id = response[mol].core;
+                            option.innerHTML = response[mol].core;
+                            option.value = response[mol].core;
+                            document.getElementById('singlecoreselectionBox').appendChild(option);
+                        }
+                        all_cores_within_core.push(response[mol].core);
+                    }
+                });
+        };
+
+        $scope.outputUpdate = function() {
+            /**
+            * This function
+            */
+            multicoreNetwork.filterData();
+        };
+
+        function highlight_rg_core_function(core_investigating){
+            /**
+            * This function
+            */
+            searched_cores_and_mols_id_rg_core_text.innerText = "Highlighted Core: " + core_investigating;
+                
+            // Need to then highlight the id if present
+            list_of_nodes = document.getElementsByClassName("node");
+            
+            var id_of_nodes = [];
+            for(var i=0; i<list_of_nodes.length; i++) {
+                node_id = list_of_nodes[i].id;
+                core_id = node_id.split('_');
+                if (core_id[0] == core_investigating){
+                    id_of_nodes.push(list_of_nodes[i].id);
+                }
+            }
+            if (id_of_nodes.length > 0){
+                for(var i=0; i<id_of_nodes.length; i++){
+                    node_pie_chart = document.getElementById(id_of_nodes[i]);
+                    for (child in node_pie_chart.childNodes){
+                        if (node_pie_chart.childNodes[child].localName == 'path'){
+                            node_pie_chart.childNodes[child].setAttribute("style", "stroke:rgb(243,114,33);stroke-width:2.5");
+                        }
+                    }
+                }
+                // Need to add to a list to remove the highlight when another core is searched
+                multicoreNetwork.core_investigating = core_investigating;
+                highlight_cores = core_investigating;
+            } else {
+                alert(core_investigating.concat(' not in dataset'));
+                searched_cores_and_mols_id_rg_core_text.innerText = null;
+                highlight_cores = null;
+            }
+
+            // Change the table header with core
+            table_headers = document.getElementsByTagName('th');
+            for (head in table_headers){
+                if (table_headers[head].id == core_investigating){
+                    table_headers[head].setAttribute("style", "background-color:rgb(243, 114, 33);");
+                }
+            }
+        };
+
+        function all_core_extraction_function(core_investigating, dataset){
+            /**
+            * This function
+            */
+            document.getElementById("scatterplot_button").style.borderStyle = "none";
+            document.getElementById("rg_core_vis_button").style.borderStyle = "none none solid none";
+            document.getElementById("all_cores_button").style.borderStyle = "none none solid none";
+            document.getElementById("single_core_button").style.borderStyle = "none";
+            document.getElementById("core_comparator_button").style.borderStyle = "none";
+
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'inline';
+            document.getElementById('loadingGif').style.display = 'inline';
+            
+            
+            document.getElementById('scatterplot_wrapper').style.display = 'none';
+            // document.getElementById('mol_clicked_information').style.display = 'inline';
+            document.getElementById('all-cores-visualisation-div').style.display = 'inline';
+            
+            paragraph_mols = document.getElementById("number_mols_in_dataset");
+            paragraph_rgs = document.getElementById("number_rg_in_dataset");
+            paragraph_cores = document.getElementById("number_of_cores");
+
+            if (dataset == rg_vis_dataset_cores){
+                document.getElementById('loadingGif').style.display = 'none';
+                if (core_investigating != 'all'){
+                    if (highlight_cores != null) {
+                        removeCoreHighlightFunction()
+                    }
+                    highlight_rg_core_function(core_investigating);
+                }
+            } else {
+                rg_vis_dataset_cores = dataset;
+
+                if (document.getElementById('new_dataset_tab').className == 'active'){
+                    dataset_name = 'new_dataset';
+                } else {
+                    dataset_name = dataset;
+                };
+
+                if (document.getElementById('round_selection').style.display == 'inline'){
+                    round_investigating = document.getElementById('roundselectionBox').value;
+                } else {
+                    round_investigating = 'norounds';
+                };
+
+                $http.get('/'+dataset_name+'/'+round_investigating+'/multi_core_rg_generator/')
+                .then(function(response){
+                    data = response.data;
+                    // Set initial sizing (incase already increased)
+                    document.getElementById("cores_plot").setAttribute("width", w);
+                    document.getElementById("cores_plot").setAttribute("height", h*2);
+
+                    // Setting range slide values
+                    // document.getElementById("mycoreRange").min = Math.min(...Object.values(data.number_of_molecules));
+                    // document.getElementById("mycoreRange").max = Math.max(...Object.values(data.number_of_molecules));
+                    // document.getElementById("minmycoreRange").innerHTML = Math.min(...Object.values(data.number_of_molecules));
+                    // document.getElementById("maxmycoreRange").innerHTML = Math.max(...Object.values(data.number_of_molecules));
+                    // console.log(minRangeSlider.minValue);
+                    //console.log(Math.min(...Object.values(data.number_of_molecules)), Math.max(...Object.values(data.number_of_molecules)));
+                    $scope.minRangeSlider.options.floor = Math.min(...Object.values(data.number_of_molecules));
+                    $scope.minRangeSlider.options.ceil = Math.max(...Object.values(data.number_of_molecules));
+                    $scope.minRangeSlider.minValue = Math.min(...Object.values(data.number_of_molecules));
+                    $scope.minRangeSlider.maxValue = Math.max(...Object.values(data.number_of_molecules));
+
+                    // Cores that are new - when looking into round data
+                    if (data.new_cores != []){
+                        allcoreTable.new_cores = data.new_cores;
+                    } else{
+                        allcoreTable.new_cores = [];
+                    };
+
+                    cores_to_filter = [];
+                    // look at size of cores and filter
+                    if (Object.keys(data.number_of_molecules).length >= 15){
+                        cores_to_remain = [];
+                        // filter the amount of cores that has less than 15
+                        for (core in data.number_of_molecules){
+                            if (data.number_of_molecules[core] >= 15){
+                                cores_to_remain.push(core);
+                            } else {
+                                cores_to_filter.push(core);
+                            }
+                        }
+
+                        // if length of cores_to_remain is bigger than a certain size then make area bigger
+                        if (cores_to_remain.length > 15) {
+                            var new_width = document.getElementById("cores_plot").width.animVal.value + (Math.round(cores_to_remain.length / 15) * 200);
+                            var new_height = document.getElementById("cores_plot").height.animVal.value + (Math.round(cores_to_remain.length / 15) * 100);
+                            document.getElementById("cores_plot").setAttribute("width", new_width);
+                            document.getElementById("cores_plot").setAttribute("height", new_height);
+                        }
+                    }
+
+                    if (paragraph_mols.childNodes.length > 1) {
+                        paragraph_mols.removeChild(paragraph_mols.childNodes[1]);
+                        paragraph_rgs.removeChild(paragraph_rgs.childNodes[1]);
+                        paragraph_cores.removeChild(paragraph_cores.childNodes[1]);
+                        // paragraph_mols.parentNode.removeChild(paragraph_mols.lastElementChild); 
+                        // paragraph_rgs.parentNode.removeChild(paragraph_rgs.lastElementChild);
+                        // paragraph_cores.parentNode.removeChild(paragraph_cores.lastElementChild); 
+                    }               
+                    paragraph_mols.appendChild(document.createTextNode(data.text[0]));
+                    paragraph_rgs.appendChild(document.createTextNode(data.text[1]));
+                    paragraph_cores.appendChild(document.createTextNode(data.text[2]));
+                    
+                    // multicoreNetwork.graph_information = {"nodes":data.nodes, "edges":data.edges};
+                    // multicoreNetwork.core_information = {"nodes":data.nodes, "edges":data.edges};
+                    //multicoreNetwork.setup(core_investigating);
+                    if (multicoreNetwork.dataset_investigating != dataset){
+                        multicoreNetwork.graph_information = {"nodes" : [],
+                                                                "edges" : [],
+                                                                "table" : {}
+                                                            }
+                        multicoreNetwork.core_information = {"nodes" : [],
+                                                                "edges" : [],
+                                                                "table" : {}
+                                                            }
+                        multicoreNetwork.dataset_investigating = dataset;
+                    }
+                    multicoreNetwork.core_investigating = core_investigating;
+                    multicoreNetwork.setup();
+                    multicoreNetwork.addData({"nodes":data.nodes,
+                                                "edges":data.edges,
+                                                "examples":data.number_of_molecules,
+                                                "table":data.table});
+                    
+                    //core_table(dataset, core_investigating, data);
+                    if (allcoreTable.dataset != dataset){
+                        allcoreTable.comparison_table_data = {};
+                    }
+                    allcoreTable.dataset = dataset;
+                    allcoreTable.core_investigating = core_investigating;
+                    allcoreTable.addData(data.table);
+                    allcoreTable.info();
+
+                    var core_tickboxes = document.getElementById('coreselectionBox');
+                    while(core_tickboxes.lastChild){
+                        core_tickboxes.removeChild(core_tickboxes.lastChild);
+                    }
+                    var core;
+                    for (core in core_list){
+                        var core_smarts = core_list[core];
+                        var label = document.createElement("label");
+                        var description = document.createTextNode(core_smarts);
+                        var checkbox = document.createElement("input");
+                        
+                        checkbox.type = "checkbox";
+                        checkbox.name = core_smarts;
+                        checkbox.value = core_smarts;
+                        checkbox.onclick = (function(d){
+                            return function(){
+                                if (document.getElementById('core-comparator').style.display != 'inline'){
+                                    document.getElementById('core-comparator').style.display = 'inline';
+                                }
+                                if (document.getElementById('core-comparator-table').style.display != 'inline'){
+                                    document.getElementById('core-comparator-table').style.display = 'inline'
+                                }
+                                var core_smarts = core_list[d];
+                                if (document.getElementsByName(core_smarts)[0].checked){
+                                    comparecoreFunction(core_smarts);
+                                } else {
+                                    removecoreFunction(core_smarts);
+                                }
+                            };}(core));
+                        
+                        label.appendChild(checkbox);
+                        label.appendChild(description);
+
+                        document.getElementById('coreselectionBox').appendChild(label);
+                        document.getElementById('loadingGif').style.display = 'none';
+                    }
+
+                    if (cores_to_filter.length > 0){
+                        // core_filtered_text.innerHTML = cores_to_filter.length + ' cores have been filtered';
+                        document.getElementById("numberofcoresfiltered").innerHTML = (data.text[2]-cores_to_filter.length) + ' core(s) present. ' + cores_to_filter.length + ' cores have been filtered';
+                        multicoreNetwork.deleteData(cores_to_filter);
+                        // document.getElementById("mycoreRange").value = 15;//Math.min(...Object.values(data.number_of_molecules));
+                        // document.getElementById("mycoreRangevolume").value = 'Cores present have more than '+document.getElementById("mycoreRange").value+' examples';
+                        $scope.minRangeSlider.minValue = 15;//Math.min(...Object.values(data.number_of_molecules));
+                    } else {
+                        document.getElementById("numberofcoresfiltered").innerHTML = data.text[2] + ' core(s) present.';
+                        //document.getElementById("mycoreRange").value = Math.min(...Object.values(data.number_of_molecules));
+                        // document.getElementById("mycoreRangevolume").value = 'Cores present have more than '+document.getElementById("mycoreRange").value+' examples';
+                    }
+
+                });
+            }
+        };
+        
+        $scope.allcoreextractionFunction = function(){
+            /**
+            * This function
+            */
+            var dataset = document.getElementById('dataset_title').innerHTML;
+
+            highlight_cores = null;
+            highlight_molecules = null;
+
+            all_core_extraction_function("all", dataset)
+        };
+
+        function all_core_extraction(d, dataset){
+            /**
+            * This function
+            */
+            all_core_extraction_function(d.core, dataset);            
+        };
+        
+        function single_core_extraction(dataset, core){
+            /**
+            * This function
+            */
+            document.getElementById('all-cores-visualisation-div').style.display = 'none';
+            document.getElementById('node_core_table_location').style.display = 'none';
+            
+            document.getElementById('scatterplot_wrapper').style.display = 'none';
+            // document.getElementById('mol_clicked_information').style.display = 'inline';
+            document.getElementById('single-core-visualisation-div').style.display = 'inline';
+            document.getElementById('interactive_mol_table').style.display = 'inline-block';
+            
+            // Need to make the core the selection in the dropdown box
+            document.getElementById('singlecoreselectionBox').value = core;
+
+            $http.get('/'+dataset+'/core_rg_generator/'+core+'/')
+                .then(function(response){
+                    data = response.data;
+                    
+                    if (document.getElementById('core_identity').childNodes.length > 1) {
+                        for (child = 1; child < document.getElementById('core_identity').childNodes.length; child++) {
+                            document.getElementById('core_identity').removeChild(document.getElementById('core_identity').childNodes[child]);
+                            document.getElementById('number_mols_in_core').removeChild(document.getElementById('number_mols_in_core').childNodes[child]);
+                        }                    
+                        //document.getElementById('core_identity').parentNode.removeChild(document.getElementById('core_identity').lastElementChild); 
+                        //document.getElementById('number_mols_in_core').parentNode.removeChild(document.getElementById('number_mols_in_core').lastElementChild);
+                    }  
+                    document.getElementById('core_identity').appendChild(document.createTextNode(data.nodes[0].core));
+                    document.getElementById('number_mols_in_core').appendChild(document.createTextNode(data.molecular_information.length));
+                    
+                    singlecoreNetwork.graph_information = {"nodes":data.nodes, "edges":data.edges};
+                    singlecoreNetwork.core_information = {"nodes":data.nodes, "edges":data.edges};
+                    singlecoreNetwork.setup(core);
+                    
+                    molecule_table(data.molecular_information);
+                    });
+        };
+        
+        // function core_table(dataset, core_investigating, data){
+        //     document.getElementById('node_core_table_location').style.display = 'inline';    
+        //     thead = multi_core_node_table_svg.append("thead");
+        //     tbody = multi_core_node_table_svg.append("tbody");
+            
+        //     var columns = Object.keys(data.table);
+
+        //     table_of_data = data;
+
+        //     core_list = columns;
+            
+        //     thead.append("tr")
+        //         .selectAll("th")
+        //         .data(columns)
+        //         .enter()
+        //         .append("th")
+        //             .text(function(d){ return d;})
+        //         .on("click", function(d){
+        //             single_core_extraction(dataset, d);
+        //         })
+        //         .attr("id", function(d){
+        //             return d;
+        //         })
+        //         .style("background-color", function(d){
+        //             if (d == core_investigating){
+        //                 return d3.rgb(243,114,33);
+        //             } else {
+        //                 return d3.rgb(0,159,218);
+        //             }});
+        
+        //     var rows = tbody.selectAll("tr")
+        //             .data([columns.map(function(d){ return data.table[d]; })])                            // each row gets one object
+        //             .enter().append("tr");
+            
+        //     cells = rows.selectAll("td")
+        //         .data(function(row){ return row; })
+        //         .enter()
+        //         .append("td");
+        
+        //     cells.filter(function(d) { return !(d instanceof Array); })
+        //             .text(function(d) { return d; });
+        //         // fill with a new table if data is an Array
+        //     cells.filter(function(d) { return (d instanceof Array); })//d;JSON.stringify(d)console.log(d, 'd'); 
+        //             //.call(function(data){console.log(data.__data__,'asdfag');})
+        //             .append("table")
+        //             .call(recurse);
+            
+            
+        //     function recurse(sel){
+        //         sel.each(function(data){
+        //             // console.log(data, 'table_data');
+                    
+        //             core_node_breakdown_table_svg = d3.select(this);
+        //             colnames = Object.keys(data[0][0]);
+        //             //console.log(table, 'table');
+                    
+        //             core_node_breakdown_table_svg.append("thead").append("tr").selectAll("th")
+        //                 .data(colnames)
+        //                 .enter().append("th")
+        //                 .text(function(d) { return d; });
+                        
+        //             tds = core_node_breakdown_table_svg.append("tbody").selectAll("tr")
+        //                 .data(data[0])                          // each row gets one object
+        //                 .on("mouseover", function(){
+        //                     d3.select(this)
+        //                         .style("background-color", "orange");
+        //                 })
+        //                 .enter().append("tr").selectAll("td")
+        //                 .data(function(d) {                 // each cell gets one value
+        //                     return colnames.map(function(k) { // for each colname (i.e. key) find the corresponding value
+        //                     return d[k] || "";              // use empty string if key doesn't exist for that object
+        //                     });
+        //                 })
+        //                 .enter()
+        //                 .append("td")
+        //                 .text(function(d){
+        //                     if (typeof(d) == "number"){
+        //                         cell_value = d;
+        //                     } else{
+        //                         cell_value = null;
+        //                     }
+        //                     return cell_value;
+        //                 });
+                    
+        //             tds.filter(function(d) { return !(d instanceof Array); })
+        //                 .append("img")
+        //                 .attr("src", function(d){
+        //                     if (typeof(d) != "number") {
+        //                         cell_value = d;
+        //                     } else {
+        //                         cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+        //                     }
+        //                     return "xlink:xlink:href", "data:image/png;base64,"+cell_value; });//+d
+        //                 //.text(function(d) { console.log(d, 'ddd'); return d; });
+                    
+        //         });
+        //     }
+        // };
+
+        function molecule_table(molecular_information){
+            /**
+            * This function
+            */
+            //// generate table
+            columns = Object.keys(molecular_information[0]);
+            
+            document.getElementById('mol_table').style.display = 'table';
+            document.getElementById('mol_table').style.height = h;
+            document.getElementById('mol_table').style.width = "50px";
+            $('#interactive_mol_table').empty();
+            thead = single_core_mol_table_svg.append("thead");
+            tbody = single_core_mol_table_svg.append("tbody");
+            
+            thead.append("tr") 
+                .selectAll("th")
+                .data(columns)
+                .enter()
+                .append("th")
+                    .text(function(d){ return d;});
+                    
+            var rows = tbody.selectAll("tr")
+                        .data(molecular_information) 
+                        .enter()
+                        .append("tr");
+            rows.on("mouseover", function(){
+                            d3.select(this)
+                                .style("background-color", "orange");
+                })
+                .on("mouseout", function(){
+                                d3.select(this)
+                                    .style("background-color","transparent");
+                });
+
+            cells = rows.selectAll("td")
+                        .data(function(rows){
+                                return columns.map(function(column){
+                                    return {column: column, value: rows[column]};
+                                });
+                            })
+                        .enter()
+                        .append("td")
+                            .text(function(d){
+                                if (d.column != 'Image' && d.column != 'Core' && d.column != 'Reduced Graph Image'){
+                                        cell_value = d.value;
+                                    } else{
+                                            cell_value = null;
+                                    }
+                                return cell_value; })
+                            .append("img")
+                            .attr("src", function(d){
+                                    if (d.column == 'Image' || d.column == 'Core' || d.column == 'Reduced Graph Image'){
+                                        cell_value = d.value;
+                                    } else{
+                                            cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                                    }
+                                    return "xlink:xlink:href", "data:image/png;base64,"+cell_value; 
+                                });
+            
+        };
+
+        function additionalgroupsFunction(cluster){
+            /**
+            * This function
+            */
+            $http.get('/core_rg_generator/'+cluster+'/additional_groups/')
+                .then(function(response){
+                    data = response.data;
+                    //console.log(data);
+                    //var nodes2 = data.nodes;
+                    //var edges2 = data.edges;                    
+                    //nodes.push(nodes2);
+                    //links.push(edges2);
+                    
+                    singlecoreNetwork.addData({"nodes":data.nodes, "edges":data.edges});
+                    
+                });
+        };
+
+        function removeadditionalgroupsFunction(cluster){
+            /**
+            * This function
+            */
+            $http.get('/core_rg_generator/'+cluster+'/additional_groups/')
+                .then(function(response){
+                    data = response.data;
+                    
+                    singlecoreNetwork.deleteData();//{"nodes":data.nodes, "edges":data.edges});
+                    
+                });
+        };
+
+        function generatePieChart(dataset, nodefillsDict){
+            /**
+            * This function
+            */
+            // generate pie chart
+            pop_up_node_piechart.selectAll("*").remove();
+            document.getElementById('rg_pie_chart').style.display = 'inline';
+            //radius = Math.min(w2, h2)/2;
+            radius = 100;
+            //donutWidth = 75;
+            
+            var arc = d3.svg.arc()
+                        .outerRadius(radius - 10)
+                        .innerRadius(0);//innerRadius(radius - donutWidth)
+            //var labelArc = d3.svg.arc()
+            //                .outerRadius(radius - 50)
+            //                .innerRadius(radius - 50);
+            var pie = d3.layout.pie()
+                        .sort(null)
+                        .value(function(d){ return d.Occurrences; });//function(data) {
+
+            var g = pop_up_node_piechart.selectAll(".arc")
+                        .data(pie(dataset))
+                        .enter()
+                        .append("g")
+                        .attr("class", "arc");
+            
+            var colour_scale = d3.scale.category20(); 
+            //console.log(colour_scale);        
+            g.append("path")
+                .attr("d", arc)
+                .style("fill", function(d){ 
+                    //fill_index = list_of_smiles.indexOf(d.data.SMILES); 
+                    return nodefillsDict[d.data.SMILES];//fill_index]; 
+                });//colour_scale(d.data.SMILES); });
+                
+            var legendScale = d3.scale.ordinal()
+                .domain(Object.keys(nodefillsDict))
+                .range(Object.values(nodefillsDict));
+
+            legendRectSize = 20;
+            legendSpacing = 4;
+            var legend = pop_up_node_piechart.selectAll('.legend')
+                .data(legendScale.domain())//colour_scale.domain())
+                .enter()
+                .append('g')
+                .attr('class', 'legend')
+                .attr('transform', function(d, i) {
+                
+                var height = legendRectSize + legendSpacing;
+                var offset =  height * legendScale.domain().length / 2;//colour_scale.domain().length
+                var horz = -2 * (legendRectSize*-4);
+                var vert = i * height - offset;
+                return 'translate(' + horz + ',' + vert + ')';
+            });
+            
+            legend.append('rect')
+            .attr('width', legendRectSize)
+            .attr('height', legendRectSize)                                   
+            .style('fill', legendScale)//colour_scale)
+            .style('stroke', legendScale);//colour_scale);
+            
+            legend.append('text')
+            .attr('x', legendRectSize + legendSpacing)
+            .attr('y', legendRectSize - legendSpacing)
+            .text(function(d) { return d; });
+            
+        };
+        
+        // function toggleStat(stat_name){
+        //     var current = d3.select("tr[rowstat='" + stat_name + "']")
+        //         .attr("chosen")
+
+        //     // Invert it. When the current toggle status is "true", the comparison
+        //     // below returns "false"; when the current status is "false", it returns
+        //     // "true". A bit opaque, but I can't store proper booleans in HTML attr.
+        //     d3.select("tr[rowstat='" + stat_name + "']")
+        //         .attr("chosen", current == "false")
+
+
+
+        //     // Toggle the statistic in the plot
+        //     //drawLinePlot(stats, height, width, margin, transDur, reportStats);
+        // };
+
+        $scope.saveCoreTable = function(){
+            /**
+                * This function
+                */
+            var dataset = document.getElementById('dataset_title').innerHTML;
+            //var table_info = document.getElementById('interactive_core_table');
+            var cores = document.getElementById('multi_interactive_core_table').childNodes[0].childNodes[0].innerText;
+            // console.log(table_of_data);
+            // console.log(JSON.stringify(table_of_data));
+            $http({
+                url:'/'+dataset+'/all_cores/save_table/',
+                method:'POST',
+                data:JSON.stringify(cores),
+                //data:JSON.stringify(table_of_data)
+                responseType: 'arraybuffer'
+            }).success(function(response){
+                    filename = dataset+'_node_table.xlsx';//txtxlsx
+                    var blob = new Blob([response],
+                                        {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
+                    if(window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else{
+                        var elem = window.document.createElement('a');
+                        elem.href = window.URL.createObjectURL(blob);
+                        elem.download = filename;
+                        document.body.appendChild(elem);
+                        elem.click();
+                        document.body.removeChild(elem);
+                    }
+                });
+        };
+
+        $scope.saveComparatorTable = function(){
+            /**
+                * This function
+                */
+            var dataset = document.getElementById('dataset_title').innerHTML;
+            var cores = document.getElementById('compare_interactive_core_table').childNodes[0].childNodes[0].innerText;
+            $http({
+                url:'/'+dataset+'/comparator/save_table/',
+                method:'POST',
+                data:JSON.stringify(cores),
+                responseType: 'arraybuffer'
+                //data:JSON.stringify(table_of_data)
+            }).success(function(response){
+                    // cores_name = null;
+                    // console.log(cores.split('   '));
+                    // console.log(cores, cores.length, 'cores');
+                    // for (var c=0; c<cores.length; c++){
+                    //     if (cores_name == null){
+                    //         cores_name = cores[c];
+                    //     } else {
+                    //         cores_name += "_" + cores[c];
+                    //     }
+                    // }
+
+                    var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                    cores_names = null;//[]
+                    for (var check=0; check<checkboxes.length; check++){
+                        if (cores_names == null){
+                            cores_names = checkboxes[check].name;
+                        } else {
+                            cores_names += "_" + checkboxes[check].name;
+                        }
+                    };
+
+                    filename = dataset+'_'+cores_names+'_node_comparator_table.xlsx';
+                    var blob = new Blob([response],
+                                        {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
+                    if(window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else{
+                        var elem = window.document.createElement('a');
+                        elem.href = window.URL.createObjectURL(blob);
+                        elem.download = filename;
+                        document.body.appendChild(elem);
+                        elem.click();
+                        document.body.removeChild(elem);
+                    }
+                });
+        };
+
+        $scope.saveMolTable = function(){
+            /**
+                * This function
+                */
+            var dataset = document.getElementById('dataset_title').innerHTML;
+            var core = document.getElementById('singlecoreselectionBox').value;
+            $http({
+                url:'/'+dataset+'/core/'+core+'/save_table/',
+                method:'POST',
+                data:JSON.stringify(table_of_data),
+                responseType: 'arraybuffer'
+            }).success(function(response){
+                    filename = dataset+'_'+core+'_table.xlsx';
+                    var blob = new Blob([response],
+                                        {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
+                    if(window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveBlob(blob, filename);
+                    }
+                    else{
+                        var elem = window.document.createElement('a');
+                        elem.href = window.URL.createObjectURL(blob);
+                        elem.download = filename;
+                        document.body.appendChild(elem);
+                        elem.click();
+                        document.body.removeChild(elem);
+                    }
+                });
+        };
+
+        function averageActivity(activities){
+            /**
+            * This function
+            */
+            var count = activities.length;
+            var sum = activities.reduce((previous, current) => current += previous);
+            return (sum / count).toFixed(2);
+            // returns to 2 dp
+        };
+
+        function medianActivity(activities){
+            /**
+            * This function
+            */
+            activities.sort((a, b) => a - b);
+            var lowMiddle = Math.floor((activities.length - 1) / 2);
+            var highMiddle = Math.ceil((activities.length - 1) / 2);
+            return ((activities[lowMiddle] + activities[highMiddle]) / 2).toFixed(2);
+            // returns to 2 dp
+        };
+
+        function stddevActivity(mean, activities){
+            /**
+            * This function
+            */
+            return Math.sqrt(activities.reduce(function(sq, n){
+                return sq + Math.pow(n-mean, 2);
+            }, 0) / (activities.length-1)).toFixed(2);
+            // returns to 2 dp
+        };
+
+        function generateBreakdownTableFunction(dataset){
+            /**
+            * This function
+            */
+            // console.log(dataset, 'breakdown table');
+            var dataset = dataset.map(function(d){
+                mean = averageActivity(d.Activities)
+                
+                if (d.PreviousExamples){
+                    if (d.PreviousExamples == 'NEWCORE'){
+                        // set somewhere says new core
+                        return {
+                            'SMILES' : d.SMILES,
+                            'Image' : d.Image,
+                            'Occurrences' : d.Occurrences,
+                            'Median Activity' : medianActivity(d.Activities),
+                            'Mean' : mean,
+                            'Std dev' : stddevActivity(mean, d.Activities),
+                            //'Activities' : d.Activities
+                        };
+                    } else if(d.PreviousExamples == 'Old'){
+                        return {
+                            'SMILES' : d.SMILES,
+                            'Image' : d.Image,
+                            'Occurrences' : d.Occurrences,
+                            'Added Examples' : d.AddedExamples,
+                            'Median Activity' : medianActivity(d.Activities),
+                            'Mean' : mean,
+                            'Std dev' : stddevActivity(mean, d.Activities),
+                            //'Activities' : d.Activities
+                        };
+                    } else if(d.PreviousExamples == 'NEWFRAG'){
+                        return {
+                            'SMILES' : d.SMILES,
+                            'Image' : d.Image,
+                            'Occurrences' : d.Occurrences,
+                            'Added Examples' : 'New Fragment',
+                            'Median Activity' : medianActivity(d.Activities),
+                            'Mean' : mean,
+                            'Std dev' : stddevActivity(mean, d.Activities),
+                            //'Activities' : d.Activities
+                        };
+                    };
+
+                } else {
+                    return {
+                        'SMILES' : d.SMILES,
+                        'Image' : d.Image,
+                        'Occurrences' : d.Occurrences,
+                        'Median Activity' : medianActivity(d.Activities),
+                        'Mean' : mean,
+                        'Std dev' : stddevActivity(mean, d.Activities),
+                        //'Activities' : d.Activities
+                    };
+                };
+                
+            });
+
+            //// generate table
+            columns = Object.keys(dataset[0]);
+            document.getElementById('node_table_location').style.display = 'table';
+            $('#interactive_table').empty();
+            thead = pop_up_node_table.append("thead");
+            tbody = pop_up_node_table.append("tbody");
+            console.log(dataset[1]);
+
+            thead.append("tr") 
+                .selectAll("th")
+                .data(columns)//columns.slice(0,-1))//
+                .enter()
+                .append("th")
+                    .text(function(d){ return d;});
+
+            var rows = tbody.selectAll("tr")
+                        .data(dataset)
+                        .attr('id', function(d){console.log(d); return 'abc';}) 
+                        .enter()
+                        .append("tr")
+                        .sort(function(a, b){ return d3.descending(a.Occurrences, b.Occurrences); });
+
+            rows.on("mouseover", function(){
+                            d3.select(this)
+                                .style("background-color", "orange");
+                })
+                .on("mouseout", function(){
+                                d3.select(this)
+                                    .style("background-color","transparent");
+                })
+                .on("click");
+            
+            //alert(rows);            
+            cells = rows.selectAll("td")
+                        .data(function(rows){
+                                return columns.map(function(column){
+                                    //console.log(columns, column, rows, 'col');
+                                    return {column: column, value: rows[column], image: rows['Image']};
+                                });
+                            })
+                        .enter()
+                        .append("td")
+                            .text(function(d){
+                                if (d.column != 'Image'){
+                                        cell_value = d.value;
+                                        // Colouring the cells if they are new or added to within the round data
+                                        if (d.column == 'Added Examples'){
+                                            if (d.value == 'New Fragment'){
+                                                d3.select(this).style("background-color", "rgb(243,114,33)");
+                                            } else if(d.value >= 1) {
+                                                d3.select(this).style("background-color", "rgb(243,114,33)");
+                                            };
+                                        };
+                                    } else{
+                                            cell_value = null;
+                                    }
+                                return cell_value; })
+                            .append("img")
+                            .attr("src", function(d){
+                                    if (d.column == 'Image'){
+                                        //console.log(d, 'd');
+                                        cell_value = d.value;
+                                    // } else if (d.column == 'SMILES'){
+                                    //     cell_value = d.image;
+                                    } else{
+                                            cell_value = "R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                                    }
+                                    return "xlink:xlink:href", "data:image/png;base64,"+cell_value; 
+                                });
+        };
+        
+        function nodeInformationFunction(piechart, dataset){
+            /**
+            * This function
+            */
+            document.getElementById('breakdown_small_screen').style.display = 'inline';
+            document.getElementById('node_info_breakdown').style.display = 'inline';
+
+            childN = piechart.childNodes;
+            // console.log(childN, 'childNode');
+            var nodefillsDict = {};
+            for (i = 0; i < childN.length-1; i++) {
+                if (childN[i].nodeName == 'path'){
+                    nodefillsDict[childN[i].getAttribute('class')] = childN[i].getAttribute('fill');
+                }
+            }
+
+            document.getElementById('pop_up_functional_group_text').innerHTML = 'Number of Unique Substructural Fragments: '.concat(childN.length-1);
+            generatePieChart(dataset, nodefillsDict);
+            generateBreakdownTableFunction(dataset);            
+
+        };
+
+        $scope.anotherNewDataset = function(){
+            /**
+            * This function
+            */
+           // remove all past features
+            
+            document.getElementById('current_datasets_wrapper').style.display = 'none';
+            document.getElementById('new_dataset_wrapper').style.display = 'inline';
+            document.getElementById('dataset_selection').style.display = 'none';
+
+            document.getElementById('current_dataset_tab').removeAttribute('class');
+            document.getElementById('new_dataset_tab').setAttribute('class', 'active');
+            
+
+            // clear the svgs
+            chemical_map_svg.selectAll("*").remove();
+            all_core_network_svg.selectAll("*").remove();
+            comparator_core_network_svg.selectAll("*").remove();
+            single_core_network_svg.selectAll("*").remove();
+            single_core_mol_table_svg.selectAll("*").remove();
+            multi_core_node_table_svg.selectAll("*").remove();
+            core_comparator_node_table_svg.selectAll("*").remove();
+
+            document.getElementById('visualisation_navigation').style.display = 'none';
+            document.getElementById('scatterplot_wrapper').style.display = 'none';
+            document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+            document.getElementById('dataset_title').innerHTML = '';
+            document.getElementById('new_dataset_button').style.display = 'none';
+        //    document.getElementById("creating_new_dataset_parameters").style.display = 'inline';
+        //    document.getElementById("new_dataset_content_wrapper").style.display = 'none';
+        //    document.getElementById("visualisation_navigation").style.display = 'none';
+        //    document.getElementById("scatterplot_wrapper").style.display = 'none';
+        
+        };
+
+        $scope.uploadFile = function(files) {
+            $scope.file = new FormData();
+            $scope.file.append("file", files[0]);
+        };
+
+        function createVisFiles() {
+            document.getElementById('creating_files_for_visualisation').innerHTML = 'Creating Visualisation Files';
+
+            $http.get('/running_new_dataset/create_vis_files/')
+                .success(function(response){
+                    document.getElementById('creating_files_for_visualisation').innerHTML = 'Successfully created visualisation files';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                    //document.getElementById("new_dataset_content_wrapper").style.display = 'inline';
+                    document.getElementById('visualisation_navigation').style.display = 'inline';
+                    document.getElementById('loading_file').innerHTML = '';
+                    document.getElementById('creating_rgs').innerHTML = '';
+                    document.getElementById('creating_mcs').innerHTML = '';
+                    document.getElementById('creating_rg_cores').innerHTML = '';
+                    document.getElementById('creating_files_for_visualisation').innerHTML = '';
+                    // document.getElementById('creating_new_dataset_parameters').style.display = 'none';
+                    
+                    document.getElementById('current_datasets_wrapper').style.display = 'inline';
+                    document.getElementById('new_dataset_wrapper').style.display = 'none';
+                    rg_vis_dataset_cores = null;
+                    document.getElementById("scatterplot_button").style.borderStyle = "none none solid none";//Color = "blue";//"rgb(243,114,33)";
+                    document.getElementById("rg_core_vis_button").style.borderStyle = "none";
+                    chemical_map_svg.selectAll("*").remove();
+                    all_core_network_svg.selectAll("*").remove();
+                    document.getElementById('rg_core_visualisation_wrapper').style.display = 'none';
+                    document.getElementById('all-cores-visualisation-div').style.display = 'none';
+                    document.getElementById('single-core-visualisation-div').style.display = 'none';
+                    document.getElementById('core-comparator-visualisation-div').style.display = 'none';
+
+                    document.getElementById('visualisation_navigation').style.display = 'inline';
+                    document.getElementById('dataset_title').innerHTML = document.getElementById('new_dataset_name').value;
+
+                    document.getElementById('new_dataset_button').style.display = 'inline';
+                    recognise_round('new_dataset');
+                    mapFunction('new_dataset');
+                }).error(function(error) {
+                    document.getElementById('creating_files_for_visualisation').innerHTML = 'Error creating visualisation files';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                });
+        };
+
+        function createRGCores() {
+            document.getElementById('creating_rg_cores').innerHTML = 'Creating RG Cores';
+
+            $http.get('/running_new_dataset/create_rg_cores/')
+                .success(function(response){
+                    document.getElementById('creating_rg_cores').innerHTML = 'Successfully created RG Cores';
+                    createVisFiles();
+                }).error(function(error) {
+                    document.getElementById('creating_rg_cores').innerHTML = 'Error creating RG Cores';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                });
+        };
+
+        function createMCSRG() {
+            document.getElementById('creating_mcs').innerHTML = 'Creating RG MCS';
+
+            $http.get('/running_new_dataset/create_mcs/')
+                .success(function(response){
+                    document.getElementById('creating_mcs').innerHTML = 'Successfully created RG MCS';
+                    createRGCores();
+                }).error(function(error) {
+                    document.getElementById('creating_mcs').innerHTML = 'Error creating RG MCS';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                });
+        };
+
+        function createRG(parameters) {
+            document.getElementById('creating_rgs').innerHTML = 'Creating RGs';
+
+            //$http.get('/running_new_dataset/create_rgs/')
+            $http({
+                url:'/running_new_dataset/create_rgs/',
+                method:'POST',
+                data:JSON.stringify(parameters),
+                //data:JSON.stringify(table_of_data)
+                responseType: 'arraybuffer'
+            }).success(function(response){
+                    document.getElementById('creating_rgs').innerHTML = 'Successfully creating RGs';
+                    createMCSRG();
+                }).error(function(error) {
+                    document.getElementById('creating_rgs').innerHTML = 'Error creating RGs';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                });
+        };
+
+        $scope.runningNewDatasetFunction = function(){
+            document.getElementById('loading_file').innerHTML = 'Loading file';
+            document.getElementById('loadingGif_process').style.display = 'inline';
+
+            parameters = {'minnodes': document.getElementById('minodes_selectionBox').options[document.getElementById('minodes_selectionBox').selectedIndex].value,
+                          'minsim': document.getElementById('min_tanimoto_separation').value,
+                          'fp_len': document.getElementById('fp_bit_len_selectionBox').options[document.getElementById('fp_bit_len_selectionBox').selectedIndex].value,
+                          'round_data' : document.getElementById('round_data_newdataset_yes').checked,
+                          'round_data_names': document.getElementById('round_data_name').value};
+            
+            // if (document.getElementById('round_data_newdataset_yes').checked == true){
+            //     document.getElementById('round_selection').style.display = 'inline';
+            //     console.log('HERE');
+            //     round_names = document.getElementById('round_data_name').value.split(' ');
+            //     for (r in round_names){
+            //         var option = document.createElement("option");
+            //         option.id = r;
+            //         option.value = r;
+            //         option.innerHTML = r;
+            //         document.getElementById('singlecoreselectionBox').appendChild(option);
+            //     }
+            //     // set the first value
+            //     document.getElementById('singlecoreselectionBox').options[0].value;
+            // }
+
+            $http.post('/running_new_dataset/', $scope.file, {
+                headers: {'Content-Type': undefined },
+                data:JSON.stringify(parameters),
+                transformRequest: angular.identity
+                }).success(function(results) {
+                    document.getElementById('loading_file').innerHTML = 'Successful loaded file';
+                    document.getElementById('dataset_title').innerHTML = document.getElementById('new_dataset_name').value;
+                    createRG(parameters);
+                }).error(function(error) {
+                    document.getElementById('loading_file').innerHTML = 'Error loading file';
+                    document.getElementById('loadingGif_process').style.display = 'none';
+                });
+
+        };
+            
+    }]);
+
+    </script>
+
+    {% endblock %}
+    
+    
+</body>
+</html>
