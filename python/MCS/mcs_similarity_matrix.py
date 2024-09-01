@@ -31,7 +31,7 @@ def input_args():
                         help='Name of the output of the smiles mcs file')
     parser.add_argument('-r',
                         dest='output_rg',
-                        default=r'..\example_input_files\output_rg_rg_sim_matrix.txt',
+                        default=r'..\example_input_files\output_rg_sim_matrix.txt',
                         type=str,
                         help='Name of the output of the smiles rg file')
     parser.add_argument('-p',
