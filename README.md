@@ -1,6 +1,6 @@
 # README for Reduced Graph Lead Optimisation Tool
 
-This repository contains the implementation and dataset for our paper ""
+This repository contains the implementation and dataset for our paper "Visualising Lead Optimisation Series Using Reduced Graphs"
 
 ## Code 
 
